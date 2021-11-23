@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>BCR Video</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      img.x-rotated-0 {}
+      img.x-rotated-90 {
+        -moz-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+      }
+      img.x-rotated-180 {
+        -moz-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+      }
+      img.x-rotated-270 {
+        -moz-transform: rotate(270deg);
+        -webkit-transform: rotate(270deg);
+      }
+      img{
+        margin: 0 auto;
+        position: relative;
+        width: auto;
+        height: 100%;
+      }
+
+      div{
+        position: fixed;
+        height: 100%;
+        text-align: center;
+        width: 100%;
+        background: black;
+      }
+    </style>
+
+</head>
+
+<script>
+var counter  = 0;
+var MAX_COUNTER = 100;
+function Pinger_ping(callback) {
+
+    this.inUse = true;
+    this.callback = callback;
+
+    var _that = this;
+
+    this.img = new Image();
+
+    this.img.onload = function () {
+        _that.callback('ok');
+    };
+    this.img.onerror = function (e) {
+        _that.callback('nok', e);
+    };
+
+    this.img.src = "URL_BCR_STREAM";
+
+}
+
+function _Callback(status) {
+   counter ++;
+  if (status == 'ok') {
+    console.log('connected');
+    streamimage.src = "URL_BCR_STREAM";
+  } else if (status == 'nok') {
+    console.log('NOT connected');
+    if(counter >= MAX_COUNTER){
+    console.log('maximum retry limit reached');
+        return;
+    }
+    this.timer = setTimeout(function () {
+	Pinger_ping(function (status, e) {_Callback(status);});
+    }, 300);
+  }
+}
+</script>
+
+<body class="swagger-section" style="margin: 0px; background: black;">
+<div>
+    <img id="streamimage" class="xform x-rotated-0" src="URL_BCR_STREAM">
+</div>
+<script>Pinger_ping(function (status, e) {_Callback(status);});</script>
+</body>
+
+</html>

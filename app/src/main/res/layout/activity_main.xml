@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.ltm.scp.module.android.ui.MainActivity">
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/webView"
+        android:visibility="visible"/>
+
+    <!--REMOVE-->
+ <!--   <Button
+        android:id="@+id/main_test_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="45dp"
+        android:text="test"/>-->
+    <RelativeLayout
+        android:id="@+id/main_layout_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="36dp"
+            android:layout_marginTop="36dp"
+            android:id="@+id/button_main_close"
+            android:src="@drawable/ic_close_circle"/>
+
+        <TextView
+            android:id="@+id/main_layout_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="160dp"
+            android:layout_marginRight="160dp"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:fontFamily="sans-serif-light"
+            android:textSize="22sp"
+            android:text="Impossibile connettersi all'iPOS. Verifica lo stato della connessione e riprovare."
+            />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_layout_error_message"
+            android:layout_marginTop="48dp"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/main_layout_error_retry"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:elevation="8dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="RIPROVA"
+                android:textColor="@android:color/white"
+                android:background="@color/buttonBackground"
+                android:visibility="gone"/>
+
+            <it.ltm.scp.module.android.utils.CustomProgressBar
+                android:id="@+id/main_layout_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

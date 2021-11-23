@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.ltm.scp.module.android.ui.LaunchActivity">
+
+    <ImageView
+        android:id="@+id/close_launch"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_circle"/>
+
+    <LinearLayout
+        android:id="@+id/layout_launch_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="160dp"
+        android:layout_marginRight="160dp"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <it.ltm.scp.module.android.utils.CustomProgressBar
+            android:id="@+id/progressbar_launch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/tw_launch_main_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/activity_launch_main_text_dim" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/button_launch_error_retry"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/layout_launch_center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:background="@color/buttonBackground"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:text="RIPROVA"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -1,0 +1,14 @@
+<resources>
+    <!-- Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
+    <dimen name="activity_horizontal_margin">64dp</dimen>
+
+    <!-- LaunchActivity param -->
+    <dimen name="activity_launch_main_text_dim">22sp</dimen>
+    <dimen name="activity_launch_main_text_margin_top">32dp</dimen>
+
+    <!-- MainDialogFragment param -->
+    <dimen name="dialog_main_height">800dp</dimen>
+    <dimen name="dialog_main_width">1200dp</dimen>
+</resources>

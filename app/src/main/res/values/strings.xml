@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LIS Service Market</string>
+    <string name="login_message">Inserire le credenziali personali utilizzate per l’accesso all’area privata del portale dei
+        servizi <u>www.rivenditoripuntolis.it</u>. Al termine della sessione di lavoro  ricordati di scollegarti
+per consentire l’accesso ad un nuovo operatore.
+</string>
+</resources>

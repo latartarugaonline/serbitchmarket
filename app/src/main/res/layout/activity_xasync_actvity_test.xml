@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="it.ltm.scp.module.android.ui.XAsyncActvityTest">
+
+    <LinearLayout
+        android:id="@+id/left_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:padding="40dp">
+        <Button
+            android:id="@+id/button_xasync_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"/>
+
+        <Button
+            android:id="@+id/button_xasync_get"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Status"/>
+
+        <Button
+            android:id="@+id/button_xasync_start_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start pay"/>
+
+        <Button
+            android:id="@+id/button_xasync_get_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get pay"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/left_layout">
+        <TextView
+            android:id="@+id/console_xasync"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
+
+
+
+</RelativeLayout>

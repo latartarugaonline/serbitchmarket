@@ -1,0 +1,55 @@
+# Configuration File
+#
+# URLs:
+#service_market_base_url=https://servicemarket-stg.lottomatica.it/
+#service_market_path_ctx=SERVICE_MARKET_WEB/
+#service_market_path_webview=welcomePage.jsp?terminalType=1
+#service_market_path_ping=testService.html
+#api_base_url=https://192.168.99.1:4040/
+#websocket_url=ws://192.168.99.1:8181
+#buildType=collaudo
+#fw_repo=http://services.ingenico.it/iPos/androidapp/
+#url_repo_bs=http://services.ingenico.it/iPos/bs/
+#url_repo_bsvip=http://services.ingenico.it/iPos/bsvip/
+
+#misc:
+phrase=jUWraP+2
+a_sign_hsh=1861445555
+sm_crt_sign=sha256/JbQbUG5JMJUoI6brnx0x3vZF6jilxsapbXGVfjhN8Fg=
+sm_crt_sign_dc=sha256/r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=
+sm_crt_sign_entrst=sha256/du6FkDdMcVQ3u8prumAo6t3i3G27uMP2EOhR8R0at/U=
+http_ignore=ignore_HTTPError
+
+
+
+# WebSocket prop:
+#websocket_protocol=v10.stomp
+#sub_payment = payment/status
+#sub_printer = devices/printer/status
+#sub_cashdrawer = devices/cashdrawer/status
+#sub_scanner = devices/scanner/scan
+sub_scanner_status = devices/scanner/status
+#sub_power = devices/keyevents/power
+#sub_async = async/completed
+#sub_async_payment = async/payment/completed
+#sub_async_auth = async/auth/completed
+#sub_async_tsn = async/tsn/completed
+#sub_update = system/update/status
+#sub_prompt = async/vas/completed
+#sub_scanner_snapshot = devices/scanner/snapshot
+sub_scanner_update = devices/scanner/firmware_update/zebra
+
+
+# ATTENZIONE! : parametri di default presenti anche nel file 'parseManager.js'
+#
+# iPOS printer prop:
+#align_default = left
+#bold_default = false
+#negative_default = false
+#size_default = 0
+#font_default = a
+#flip_default = false
+#rotate_default = false
+#line_default = 0
+#spacing_default = 1
+#underline_default = 0

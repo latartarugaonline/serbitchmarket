@@ -1,0 +1,63 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="file:///android_asset/js/jquery-3.1.0.min.js"></script>
+    <script src="file:///android_asset/js/xmlParser.js"></script>
+    <script type='text/javascript'>
+
+
+
+
+
+function testParser() {
+var xml = '<?xml version="1.0" encoding="utf-8" ?><Message><TextMessage><MessageLine><Word alg="CENTER" bld="1" frm="txt">Bollette Arin</Word></MessageLine><MessageLine/><MessageLine/><MessageLine><Word alg="RIGHT" bld="1" frm="txt">Data:</Word><Word frm="txt">17/07/2012</Word></MessageLine><MessageLine/><MessageLine><Word alg="RIGHT" bld="0" frm="txt">Ref:</Word><Word alg="RIGHT" frm="txt">@REF</Word></MessageLine><MessageLine/><MessageLine><Word alg="RIGHT" frm="txt">Trans.:</Word><Word alg="RIGHT" frm="txt">@TID</Word></MessageLine><MessageLine/><MessageLine><Word alg="CENTER" frm="txt">2HPMV3 EB6DIY VGMKW6 9WOWQY KK2W18 VQ1QRW K1CKTI 9WO4C4 322JVX PJ2OVH PWFTT4 DT4HSK IAPOSU MDU</Word></MessageLine><MessageLine><Word alg="CENTER" bld="1" frm="txt">CARTA SERVIZI VODAFONE</Word></MessageLine><MessageLine/><MessageLine><Word alg="CENTER" bld="1" frm="txt">Codice segreto</Word></MessageLine><MessageLine/><MessageLine><Word alg="CENTER" bld="1" frm="txt">@CARDPIN</Word></MessageLine><MessageLine/><MessageLine><Word alg="LEFT" bld="1" frm="txt">Questo codice che tra</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">poco riceverai anche via</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">SMS,e utilizzabile solo</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">dal Numero Telefonico:</Word></MessageLine><MessageLine><Word  alg="CENTER" bld="1" frm="txt">@PHONENUMBER</Word></MessageLine><MessageLine/><MessageLine><Word alg="RIGHT" bld="1" frm="txt">Importo:</Word><Word alg="RIGHT" bld="1" frm="txt">@PRICE (Euro)</Word></MessageLine><MessageLine/><MessageLine><Word alg="LEFT" bld="1" frm="txt">Per utilizzare la Carta</Word></MessageLine><MessageLine><Word  alg="LEFT" bld="1" frm="txt">chiama dal tuo cell. il</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">numero gratuito 42070, o</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">accedi alla sezione Fai</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">da te Privati del sito</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">www.vodafone.it</Word></MessageLine><MessageLine><Word alg="LEFT" bld="1" frm="txt">Data di Scadenza:</Word></MessageLine><MessageLine><Word alg="RIGHT" bld="1" frm="txt"> EXPIRINGDATE</Word></MessageLine><MessageLine><Word alg="CENTER" bld="1" frm="txt">IVA assolta ai sensi</Word></MessageLine><MessageLine><Word alg="CENTER" bld="1" frm="txt">dell art.74, comma 1,</Word></MessageLine><MessageLine><Word alg="CENTER" bld="1" frm="txt">lettera d, DPR 633/72</Word></MessageLine><MessageLine><Word alg="CENTER" bld="1" frm="txt">da Vodafone Omnitel N.V.</Word></MessageLine><MessageLine><Word alg="CENTER" bld="1" frm="txt">P.IVA 08539010010</Word></MessageLine><MessageLine/><MessageLine><Word alg="CENTER" bld="1" frm="txt">ARRIVEDERCI E GRAZIE</Word></MessageLine><MessageLine/><MessageLine><Word alg="CENTER" bld="1" frm="txt">@MESSAGE</Word></MessageLine><MessageLine><Word ALG="center" CLR="1" DIR="1" DTA="032145468" TPE="1" XSZ="1" YSZ="2" frm="bc">99TIM       0321454688</Word></MessageLine></TextMessage></Message>';
+
+
+var xmlDoc = $.parseXML( xml );
+  	$xml = $( xmlDoc );
+
+  $(xml).find('MessageLine').each(function(){
+            var $entry = $(this);
+            var word = $entry.find('Word');
+
+		if(word[0]) {
+		 $.each(word[0].attributes, function(i, attrib){
+
+				 var name = attrib.name;
+				 var value = attrib.value;
+				 $("#result").append("attr name : "+name+" attr value: "+value+"<br>");
+				 parseXml(name, value, word[0].innerText);
+			  });
+			$("#result").append("<br>Valore inserito : "+word[0].innerText+"<br>");
+             printFromJsApi.printer_setNewLines(1);
+			 }
+        });
+
+    printFromJsApi.printer_setCut(true);
+    printFromJsApi.printer_print('risposta');
+
+}
+
+function risposta(res) {
+
+$("#result").append(res);
+}
+
+     </script>
+    <title>Documento senza titolo</title>
+
+</head>
+
+<body>
+
+<script type='text/javascript'>
+
+jQuery(document).ready(function($){
+testParser();
+});
+</script>
+
+Risultato
+<div id="result"></div>
+</body>
+</html>

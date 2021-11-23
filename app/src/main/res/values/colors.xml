@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="buttonBackground">#0288D1</color>
+    <color name="orangeLTM">#ff6600</color>
+
+    <color name="vltDarkBlue">#003772</color>
+    <color name="vltLightBlue">#67a6e4</color>
+
+    <color name="rippleWhite">#64FFFFFF</color>
+
+        <color name="g_red">#FFC93437</color>
+        <color name="g_blue">#FF375BF1</color>
+        <color name="g_yellow">#FFF7D23E</color>
+        <color name="g_green">#FF34A350</color>
+</resources>

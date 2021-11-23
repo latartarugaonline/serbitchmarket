@@ -1,0 +1,42 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorControlActivated">@color/buttonBackground</item>
+        <item name="colorControlHighlight">@color/buttonBackground</item>
+    </style>
+
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/placeholder_logo</item>
+    </style>
+
+    <!-- Temi Button-->
+
+    <style name="BlueButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/buttonBackground</item>
+        <item name="colorControlHighlight">@color/orangeLTM</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="RoundBlueButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/ripple_round_button</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:stateListAnimator">@anim/elevator</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+
+
+    <style name="FloatingHintTextStyle" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">20sp</item>
+    </style>
+</resources>

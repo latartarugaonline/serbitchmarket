@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+// Init Lottomatica Release keystore properties
+def keystorePropertiesFile = rootProject.file("ltm_keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '28.0.3'
+    defaultConfig {
+        applicationId "it.ltm.scp.module.android"
+        minSdkVersion 23
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 25
+        versionCode 90
+        versionName "0.7.9"
+        project.ext.set("archivesBaseName", "scp_android_app-" + defaultConfig.versionName)
+        buildConfigField 'String', 'IPOS_MIN', IPOS_MIN_VERSION
+        buildConfigField 'String', 'IGP_MIN', IGP_MIN_VERSION
+        buildConfigField 'String', 'PKG_GUIDA', PKG_GUIDA
+        buildConfigField 'String', 'PK', PK
+        buildConfigField 'String', 'KIV', KIV
+    }
+
+    signingConfigs {
+        ltm_config {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+    //script per escludere il file di properties in chiaro
+    aaptOptions {
+        ignoreAssetsPattern "!backup.properties.old"
+    }
+    buildTypes {
+//        ltmBuildTest {
+//            initWith debug
+//            signingConfig signingConfigs.ltm
+//        }
+        debug {
+            signingConfig signingConfigs.ltm_config
+        }
+        export {
+            initWith debug
+            debuggable false
+            zipAlignEnabled true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+//        release {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+    }
+    // Suddivisione ambienti: deprecata
+//    flavorDimensions 'default'
+//    productFlavors {
+//        sviluppo { dimension 'default' }
+//        collaudo { dimension 'default' }
+//        produzione { dimension 'default' }
+//    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support:design:27.0.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+    implementation 'com.neovisionaries:nv-websocket-client:1.30'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
+    implementation 'android.arch.work:work-runtime:1.0.0'
+}
