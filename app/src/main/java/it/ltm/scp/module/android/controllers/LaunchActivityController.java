@@ -12,12 +12,11 @@ import it.ltm.scp.module.android.devices.pos.DevicePos;
 import it.ltm.scp.module.android.devices.pos.PosUtils;
 import it.ltm.scp.module.android.devices.scanner.DeviceScanner;
 import it.ltm.scp.module.android.devices.system.DeviceSystem;
-import it.ltm.scp.module.android.devices.terminal.TerminalManagerFactory;
 import it.ltm.scp.module.android.managers.ConnectionManager;
 import it.ltm.scp.module.android.managers.ConnectionManagerFactory;
 import it.ltm.scp.module.android.managers.TerminalStatusManager;
-import it.ltm.scp.module.android.model.Result;
 import it.ltm.scp.module.android.managers.secure.Authenticator;
+import it.ltm.scp.module.android.model.Result;
 import it.ltm.scp.module.android.model.Version;
 import it.ltm.scp.module.android.model.devices.pos.gson.Auth;
 import it.ltm.scp.module.android.model.devices.pos.gson.AuthAsyncWrapper;
@@ -29,7 +28,6 @@ import it.ltm.scp.module.android.model.devices.printer.gson.status.Status;
 import it.ltm.scp.module.android.model.devices.scanner.ScannerSnapshot;
 import it.ltm.scp.module.android.model.devices.scanner.ScannerStatus;
 import it.ltm.scp.module.android.model.devices.scanner.ScannerUpdate;
-import it.ltm.scp.module.android.model.devices.system.gson.SystemInfo;
 import it.ltm.scp.module.android.model.devices.system.gson.update.UpdateConfig;
 import it.ltm.scp.module.android.model.devices.system.gson.update.UpdateStatus;
 import it.ltm.scp.module.android.ui.LaunchActivity;
@@ -92,10 +90,11 @@ public class LaunchActivityController extends WebSocketController implements Aut
         }
     }
 
-    private void proccessUpdateStatus(String message, boolean finish){
+    private void proccessUpdateStatus(String message, boolean finish) {
         try {
             getView().processUpdateStatus(message, finish);
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -206,7 +205,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
     /*
     Bonifica URL aggiornamento iPOS
      */
-    public void fase0(final boolean shouldReset){
+    public void fase0(final boolean shouldReset) {
         Log.d(TAG, "fase0: check update config..");
         DeviceSystem.getInstance().getUpdateConfig(new APICallbackV2<UpdateConfig>() {
             @Override
@@ -214,8 +213,8 @@ public class LaunchActivityController extends WebSocketController implements Aut
                 Log.d(TAG, "fase0: update config, URL: " + config.getSourceRepository());
                 String urlBs = Properties.get(Constants.PROP_URL_IPOS_REPO_BS);
                 String urlBsvip = Properties.get(Constants.PROP_URL_IPOS_REPO_BSVIP);
-                if(config.getSourceRepository().equals(urlBs)
-                        || config.getSourceRepository().equals(urlBsvip)){
+                if (config.getSourceRepository().equals(urlBs)
+                        || config.getSourceRepository().equals(urlBsvip)) {
                     Log.d(TAG, "fase0: update config OK");
                     start(shouldReset);
                 } else {
@@ -228,7 +227,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
             @Override
             public void onError(int code, String message, Exception e) {
                 Log.d(TAG, "onError() called with: code = [" + code + "], message = [" + message + "], e = [" + e + "]");
-                if(code == 404){
+                if (code == 404) {
                     Log.e(TAG, "fase0: error config not found, creating new config..");
                     UpdateConfig newConfig = new UpdateConfig();
                     newConfig.setSourceRepository(Properties.get(Constants.PROP_URL_IPOS_REPO_BS));
@@ -276,25 +275,8 @@ public class LaunchActivityController extends WebSocketController implements Aut
                 switch (result.getCode()) {
                     case Errors.ERROR_OK:
                         try {
-                            DeviceSystem.sysInfo = (SystemInfo) result.getData();
-                            String currentVersionString = DeviceSystem.sysInfo.getSystemVersion();
-                            int start = currentVersionString.indexOf("-");
-                            currentVersionString = currentVersionString.substring(0, start)
-                                    .replace(" ", "");
-                            Version currentVersion = new Version(currentVersionString);
-                            Version minVersion = TerminalManagerFactory.get().getMinVersion();
-                            Log.d(TAG, "min version: "
-                                    + minVersion.get()
-                                    + ", current version: "
-                                    + currentVersion.get());
-                            if (currentVersion.compareTo(minVersion) == -1) {
-                                String messageError = getVersionErrorMessage(currentVersion, minVersion);
-                                forceUpdate(messageError);
-                            } else {
-                                Log.d(TAG, "onFinish: IPOS Version check: compatible");
-                                startAuth(shouldReset);
-                            }
-                            break;
+                            Log.d(TAG, "onFinish: IPOS Version check: compatible");
+                            startAuth(shouldReset);
                         } catch (Exception e) {
                             Log.e(TAG, "onFinish: ", e);
                             processError(false, PosUtils.appendCodeToMessage(
@@ -304,7 +286,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
                             return;
                         }
                     case Errors.ERROR_NET_IO_IPOS:
-                        if(ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED){
+                        if (ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED) {
                             mStateManager.checkState(new TerminalStatusManager.StateListener() {
                                 @Override
                                 public void onFinish() {
@@ -338,14 +320,14 @@ public class LaunchActivityController extends WebSocketController implements Aut
         });
     }
 
-    private void forceUpdate(final String messageError){
+    private void forceUpdate(final String messageError) {
         updateViewMessage("Cerco aggiornamenti per LIS@");
         String repo = Properties.get(Constants.PROP_FW_REPO_URL);
         Log.d(TAG, "forcing update at " + repo + "..");
         DeviceSystem.getInstance().forceUpdateWithRepo(repo, new APICallbackV2<UpdateStatus>() {
             @Override
             public void onResult(UpdateStatus result) {
-                if(result.getStatus().equals("started")){
+                if (result.getStatus().equals("started")) {
                     updateViewMessage("Aggiornamento LIS@ in corso");
                 } else {
                     updateViewMessage(messageError);
@@ -368,7 +350,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
         DeviceSystem.getInstance().checkAndUpdate(new APICallbackV2<UpdateStatus>() {
             @Override
             public void onResult(UpdateStatus result) {
-                if(result.getStatus().equals("started")){
+                if (result.getStatus().equals("started")) {
                     updateViewMessage("Aggiornamento LIS@ in corso");
                 } else {
                     updateViewMessage(messageError);
@@ -442,7 +424,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
         switchLayout(STATE_ERROR);
     }
 
-    private void restoreZebraConfig(){
+    private void restoreZebraConfig() {
         DeviceScanner.getInstance().clearScannerConfigFromIpos(new APICallbackV2<Void>() {
             @Override
             public void onResult(Void result) {
@@ -468,7 +450,8 @@ public class LaunchActivityController extends WebSocketController implements Aut
     public void onPrinterStatus(Status status) {
         try {
             getView().processPrinterEvent(status);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -480,8 +463,8 @@ public class LaunchActivityController extends WebSocketController implements Aut
     public void onBarcodeStatusEvent(ScannerStatus status) {
         Log.d(TAG, "onBarcodeStatusEvent() called with: status = [" + status + "]");
         // Ignored
-        if(status.getScanner().equalsIgnoreCase(ScannerStatus.SCANNER_ZEBRA)
-                && status.getStatus().equalsIgnoreCase(ScannerStatus.STATUS_READY)){
+        if (status.getScanner().equalsIgnoreCase(ScannerStatus.SCANNER_ZEBRA)
+                && status.getStatus().equalsIgnoreCase(ScannerStatus.STATUS_READY)) {
             try {
                 getView().processBarcodeStatus("", false, true);
             } catch (Exception e) {
@@ -495,11 +478,11 @@ public class LaunchActivityController extends WebSocketController implements Aut
     @Override
     public void onBcrUpdateEvent(ScannerUpdate update) {
         Log.d(TAG, "onBcrUpdateEvent() called with: update = [" + update + "]");
-        if(update.getCode().equals(ScannerUpdate.BCR_UPDATE_START_INSTALL)){
+        if (update.getCode().equals(ScannerUpdate.BCR_UPDATE_START_INSTALL)) {
             //show popup
             try {
                 getView().processBarcodeStatus(ScannerUpdate.BCR_UPDATE_MESSAGE, false, false);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "onBcrUpdateEvent: view is null");
             }
         }
@@ -522,11 +505,11 @@ public class LaunchActivityController extends WebSocketController implements Aut
 
     @Override
     public void onUpdateEvent(UpdateStatus status) {
-        switch (status.getGeneralState()){
-            case UpdateStatus.STATE_DOWNLOADED :
+        switch (status.getGeneralState()) {
+            case UpdateStatus.STATE_DOWNLOADED:
                 showSnackBar("Download aggiornamento completato");
                 break;
-            case UpdateStatus.STATE_DOWNLOADING :
+            case UpdateStatus.STATE_DOWNLOADING:
                 showSnackBar("Download aggiornamento LIS@");
                 break;
             case UpdateStatus.STATE_START:
@@ -536,12 +519,14 @@ public class LaunchActivityController extends WebSocketController implements Aut
             default:
                 DeviceSystem.getInstance().updateSystemInfo();
                 try {
-                    if(getView().isUpdatePending()){
+                    if (getView().isUpdatePending()) {
                         proccessUpdateStatus(status.getMessage(), true);
                         //restarting controller
                         checkConnectivity();
                     }
-                } catch (Exception e) {break;}
+                } catch (Exception e) {
+                    break;
+                }
                 break;
         }
     }
@@ -551,7 +536,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
         AppUtils.clearAuthData(App.getContext());
         try {
             AppUtils.closeAppWithDialog(getView());
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "onPowerKeyPressed: ", e);
         }
 
@@ -575,10 +560,10 @@ public class LaunchActivityController extends WebSocketController implements Aut
         }
     }
 
-    private void requestLoginCredential(String message, boolean finish){
+    private void requestLoginCredential(String message, boolean finish) {
         try {
             getView().requestLoginCredential(message, finish);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.w(TAG, "requestLoginCredential: ", e);
         }
     }
