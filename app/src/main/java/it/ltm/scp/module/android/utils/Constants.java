@@ -65,5 +65,7 @@ public class Constants {
     public static int BCKGRND_TIMEOUT_READ = 120;
     public static int BCKGRND_TIMEOUT_WRITE = 60;
 
-    //bcr message
+    //p2pro
+    public static final String URL_API_REST_P2PRO = "http://localhost:8081/";
+    public static final String URL_WEB_SOCKET_P2PRO = "http://localhost:8081/";
 }

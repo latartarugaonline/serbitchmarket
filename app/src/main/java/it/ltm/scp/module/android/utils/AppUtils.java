@@ -45,7 +45,7 @@ public class AppUtils {
     public static final String TERMINAL_IGP_2 = "IGP2030S";
     public static final String TERMINAL_SUNMI = "T2lite";
     public static final String TERMINAL_SUNMI_LITE = "D2s_LITE_D";
-    public static final String TERMINAL_P2_PRO = "TBD";
+    public static final String TERMINAL_P2_PRO = "P2_PRO";
     public static Document voidDocument;
 
     static {
