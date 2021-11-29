@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.ltm.scp.module.android.ui.MainActivity">
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/main_layout_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/button_main_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_close_circle" />
+
+        <TextView
+            android:id="@+id/main_layout_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_horizontal"
+            android:text="Impossibile connettersi all'iPOS. Verifica lo stato della connessione e riprovare."
+            android:textSize="22sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_layout_error_message"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp">
+
+            <TextView
+                android:id="@+id/main_layout_error_retry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/buttonBackground"
+                android:elevation="8dp"
+                android:padding="16dp"
+                android:gravity="center"
+                android:text="RIPROVA"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:visibility="gone" />
+
+            <it.ltm.scp.module.android.utils.CustomProgressBar
+                android:id="@+id/main_layout_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

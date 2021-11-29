@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="32dp">
@@ -11,17 +11,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
-        android:layout_marginRight="40dp"
         android:layout_marginLeft="40dp"
-        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginRight="40dp"
         android:text=""
-        />
-
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="20sp" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_text_usr"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"
@@ -29,42 +27,40 @@
 
         <it.ltm.scp.module.android.ui.ActionMenuDisabledEditText
             android:id="@+id/edit_text_usr"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:importantForAutofill="no"
             android:hint="Username"
+            android:importantForAutofill="no"
             android:inputType="text"
-            android:textSize="28sp"/>
-
-
+            android:textSize="28sp" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/layout_text_pwd"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
-        app:passwordToggleEnabled="true"
-        app:hintTextAppearance="@style/FloatingHintTextStyle">
+        android:layout_marginTop="16dp"
+        app:hintTextAppearance="@style/FloatingHintTextStyle"
+        app:passwordToggleEnabled="true">
 
         <it.ltm.scp.module.android.ui.ActionMenuDisabledEditText
             android:id="@+id/edit_text_pwd"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
-            android:importantForAutofill="no"
             android:imeOptions="actionDone"
+            android:importantForAutofill="no"
             android:inputType="textPassword"
             android:textSize="28sp" />
-
     </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/view_login_button_accedi"
-        android:layout_width="160dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:padding="24dp"
         android:layout_marginTop="42dp"
         android:background="@color/buttonBackground"
         android:elevation="8dp"
@@ -72,5 +68,4 @@
         android:text="ACCEDI"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
-
 </LinearLayout>

@@ -156,13 +156,13 @@ public class MainActivity extends BaseDialogActivity {
         DeviceDisplay.getInstance().initDefaultTemplate(getApplicationContext(), new APICallback() {
             @Override
             public void onFinish(Result result) {
-                if (result.getCode() != Errors.ERROR_OK) {
-                    Snackbar snackbar = Snackbar.make(webView, "Errore inizializzazione display", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                } else {
-                    Snackbar snackbar = Snackbar.make(webView, "display inizializzato", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                }
+//                if (result.getCode() != Errors.ERROR_OK) {
+//                    Snackbar snackbar = Snackbar.make(webView, "Errore inizializzazione display", Snackbar.LENGTH_LONG);
+//                    snackbar.show();
+//                } else {
+//                    Snackbar snackbar = Snackbar.make(webView, "display inizializzato", Snackbar.LENGTH_LONG);
+//                    snackbar.show();
+//                }
             }
         });
 

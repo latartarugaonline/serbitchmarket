@@ -3,59 +3,53 @@
     android:id="@+id/dialog_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/button_dialog_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="36dp"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/ic_close_circle" />
 
-
     <!-- credential login layout ************* BEGIN -->
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true">
-        <include layout="@layout/view_login"
-            android:visibility="gone"
-            android:id="@+id/layout_login"/>
-    </LinearLayout>
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
 
+        <include
+            android:id="@+id/layout_login"
+            layout="@layout/view_login"
+            android:visibility="gone" />
+    </LinearLayout>
     <!-- credential login layout ************* END -->
 
     <LinearLayout
         android:id="@+id/global_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
         android:orientation="vertical">
-
 
         <it.ltm.scp.module.android.utils.CustomProgressBar
             android:id="@+id/progressbar_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="16dp" />
 
         <!-- System update layout BEGIN -->
-
         <LinearLayout
             android:id="@+id/layout_dialog_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp"
             android:clipToPadding="false"
             android:gravity="center_vertical"
             android:orientation="vertical"
@@ -64,6 +58,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -75,19 +70,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="sans-serif"
                     android:text="Aggiornamento: "
                     android:textColor="@android:color/black"
                     android:textSize="24sp" />
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="12dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -100,57 +94,21 @@
                     android:id="@+id/layout_dialog_update_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="sans-serif-light"
                     android:text="Aggiornamento software LIS@ in corso"
                     android:textColor="@android:color/black"
                     android:textSize="22sp" />
             </LinearLayout>
-
-            <!--<LinearLayout
-                android:id="@+id/layout_dialog_barcode_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="80dp"
-                android:layout_marginTop="32dp">
-
-                <TextView
-                    android:id="@+id/layout_dialog_barcode_button_annulla"
-                    android:layout_width="160dp"
-                    android:layout_height="80dp"
-                    android:elevation="8dp"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:text="ANNULLA"
-                    android:textColor="@android:color/white"
-                    android:background="@color/buttonBackground"/>
-
-                <TextView
-                    android:id="@+id/layout_dialog_barcode_button_riprova"
-                    android:layout_width="160dp"
-                    android:layout_height="80dp"
-                    android:layout_marginLeft="36dp"
-                    android:elevation="8dp"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:text="RIPROVA"
-                    android:textColor="@android:color/white"
-                    android:background="@color/buttonBackground"/>
-            </LinearLayout>-->
-
-
         </LinearLayout>
-
         <!-- System update layout END -->
 
         <!-- Barcode layout ************* BEGIN -->
-
         <LinearLayout
             android:id="@+id/layout_dialog_barcode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="32dp"
             android:clipToPadding="false"
             android:gravity="center_vertical"
             android:orientation="vertical"
@@ -159,6 +117,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -170,19 +129,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="sans-serif"
                     android:text="Lettore codice a barre: "
                     android:textColor="@android:color/black"
                     android:textSize="24sp" />
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="12dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -195,7 +153,7 @@
                     android:id="@+id/layout_dialog_barcode_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="sans-serif-light"
                     android:text="Lettura codice a barre errata"
                     android:textColor="@android:color/black"
@@ -206,123 +164,119 @@
                 android:id="@+id/layout_dialog_barcode_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="32dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/layout_dialog_barcode_button_annulla"
-                    android:layout_width="160dp"
-                    android:layout_height="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@color/buttonBackground"
                     android:elevation="8dp"
                     android:gravity="center"
+                    android:padding="16dp"
                     android:text="ANNULLA"
                     android:textColor="@android:color/white"
                     android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/layout_dialog_barcode_button_riprova"
-                    android:layout_width="160dp"
-                    android:layout_height="80dp"
-                    android:layout_marginLeft="36dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
                     android:background="@color/buttonBackground"
                     android:elevation="8dp"
                     android:gravity="center"
+                    android:padding="16dp"
                     android:text="RIPROVA"
                     android:textColor="@android:color/white"
                     android:textSize="24sp" />
             </LinearLayout>
-
-
         </LinearLayout>
-
-
         <!-- Barcode layout ************* END -->
 
         <!-- Auth layout ************* BEGIN -->
-
         <LinearLayout
             android:id="@+id/layout_dialog_auth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="36dp"
             android:clipToPadding="false"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:visibility="gone">
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/dialog_event_security" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:fontFamily="sans-serif"
-                    android:text="Autenticazione: "
-                    android:textColor="@android:color/black"
-                    android:textSize="24sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/dialog_x" />
-
-                <TextView
-                    android:id="@+id/layout_dialog_auth_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Seguire istruzioni sul POS"
-                    android:textColor="@android:color/black"
-                    android:textSize="22sp" />
-            </LinearLayout>
-
+                android:src="@drawable/dialog_event_security" />
 
             <TextView
-                android:id="@+id/layout_dialog_auth_button"
-                android:layout_width="160dp"
-                android:layout_height="80dp"
-                android:layout_marginLeft="80dp"
-                android:layout_marginTop="32dp"
-                android:background="@color/buttonBackground"
-                android:elevation="8dp"
-                android:gravity="center"
-                android:text="RIPROVA"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif"
+                android:text="Autenticazione: "
+                android:textColor="@android:color/black"
                 android:textSize="24sp" />
-
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dialog_x" />
+
+            <TextView
+                android:id="@+id/layout_dialog_auth_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Seguire istruzioni sul POS"
+                android:textColor="@android:color/black"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/layout_dialog_auth_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp"
+            android:background="@color/buttonBackground"
+            android:elevation="8dp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="RIPROVA"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+    </LinearLayout>
         <!-- Auth layout ************* END -->
 
         <!-- Printer layout ************* BEGIN -->
-
         <LinearLayout
             android:id="@+id/layout_dialog_printer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:visibility="gone">
@@ -331,6 +285,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -341,7 +296,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="sans-serif"
                     android:text="Stampante: "
                     android:textColor="@android:color/black"
@@ -358,8 +313,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="42dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -372,23 +327,23 @@
                         android:id="@+id/message_dialog_printer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="8dp"
                         android:fontFamily="sans-serif-light"
                         android:text="Problemi di comunicazione verso la stampante"
                         android:textColor="@android:color/black"
                         android:textSize="22sp" />
                 </LinearLayout>
 
-
                 <TextView
                     android:id="@+id/layout_dialog_printer_button"
-                    android:layout_width="160dp"
-                    android:layout_height="80dp"
-                    android:layout_marginLeft="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="32dp"
                     android:background="@color/buttonBackground"
                     android:elevation="8dp"
                     android:gravity="center"
+                    android:padding="16dp"
                     android:text="RIPROVA"
                     android:textColor="@android:color/white"
                     android:textSize="24sp" />
@@ -398,15 +353,12 @@
                 android:id="@+id/list_dialog_events"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="12dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
                 android:divider="@null"
                 android:scrollbars="none" />
         </LinearLayout>
-
         <!-- Printer layout ************* END -->
 
-
     </LinearLayout>
-
 </RelativeLayout>

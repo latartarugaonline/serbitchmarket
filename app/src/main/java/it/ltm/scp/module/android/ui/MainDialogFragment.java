@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
@@ -31,6 +32,7 @@ import it.ltm.scp.module.android.devices.pos.PosUtils;
 import it.ltm.scp.module.android.devices.terminal.TerminalManagerFactory;
 import it.ltm.scp.module.android.model.devices.printer.gson.PrinterInfo;
 import it.ltm.scp.module.android.model.devices.printer.gson.status.Status;
+import it.ltm.scp.module.android.utils.Constants;
 
 /**
  * Created by HW64 on 13/10/2016.
@@ -39,10 +41,15 @@ public class MainDialogFragment extends DialogFragment {
 
     public interface MainDialogListener {
         void onRetryAuth();
+
         void onRetryPosInfo();
+
         void onCloseApp(Dialog dialog);
+
         void onRetryBarcode();
+
         void onPrinterReady();
+
         void onCredentialAcquired(String username, String password);
     }
 
@@ -103,9 +110,10 @@ public class MainDialogFragment extends DialogFragment {
 
     private MainDialogListener listener;
 
-    public MainDialogFragment(){}
+    public MainDialogFragment() {
+    }
 
-    public static MainDialogFragment newInstance(){
+    public static MainDialogFragment newInstance() {
         MainDialogFragment f = new MainDialogFragment();
         return f;
     }
@@ -120,16 +128,25 @@ public class MainDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        int width = getResources().getDimensionPixelSize(R.dimen.dialog_main_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.dialog_main_height);
-        getDialog().getWindow().setLayout(width, height);
-
+        if (TerminalManagerFactory.get().getDeviceName().equals(Constants.DEVICE_P2_PRO)) {
+            getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        } else {
+            int width = getResources().getDimensionPixelSize(R.dimen.dialog_main_width);
+            int height = getResources().getDimensionPixelSize(R.dimen.dialog_main_height);
+            getDialog().getWindow().setLayout(width, height);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.dialog_main, container);
+        View layout;
+        if (TerminalManagerFactory.get().getDeviceName().equals(Constants.DEVICE_P2_PRO)) {
+            layout = inflater.inflate(R.layout.dialog_main_p2pro, container);
+        } else {
+            layout = inflater.inflate(R.layout.dialog_main, container);
+        }
+
         ButterKnife.bind(this, layout);
         setCancelable(false);
         eventListView.setAdapter(adapter);
@@ -138,7 +155,7 @@ public class MainDialogFragment extends DialogFragment {
         View.OnFocusChangeListener closeKeyboardOnFocusLost = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     closeKeyboard(view);
                 }
             }
@@ -147,7 +164,7 @@ public class MainDialogFragment extends DialogFragment {
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     closeKeyboard(textView);
                     accedi();
                 }
@@ -158,7 +175,7 @@ public class MainDialogFragment extends DialogFragment {
         userEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b){
+                if (!b) {
                     userEditText.setText(userEditText.getText().toString().trim());
                 }
             }
@@ -180,42 +197,42 @@ public class MainDialogFragment extends DialogFragment {
     }
 
     @OnClick(R.id.view_login_button_accedi)
-    public void accedi(){
+    public void accedi() {
         String user = userEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString();
-        if(verifyUsername(user)){
-            if(verifyPassword(password))
+        if (verifyUsername(user)) {
+            if (verifyPassword(password))
                 listener.onCredentialAcquired(user, password);
         }
 
     }
 
     @OnClick(R.id.layout_dialog_auth_button)
-    public void retryAuth(){
-        if(isAuthContext)
+    public void retryAuth() {
+        if (isAuthContext)
             listener.onRetryAuth();
         else
             listener.onRetryPosInfo();
     }
 
     @OnClick(R.id.layout_dialog_barcode_button_riprova)
-    public void retryBarcode(){
+    public void retryBarcode() {
         listener.onRetryBarcode();
     }
 
     @OnClick(R.id.layout_dialog_barcode_button_annulla)
-    public void abortBarcode(){
+    public void abortBarcode() {
         barcodeLayout.setVisibility(View.GONE);
         dismissDialog();
     }
-    
+
     @OnClick(R.id.button_dialog_close)
-    public void closeApp(){
+    public void closeApp() {
         listener.onCloseApp(getDialog());
     }
 
     @OnClick(R.id.layout_dialog_printer_button)
-    public void retryPrinterInfo(){
+    public void retryPrinterInfo() {
         printerErrorButton.setVisibility(View.GONE);
         printerErrorMessage.setText("Nuovo tentativo in corso.");
         new PrinterAPI().getPrinterStatusV2(new APICallbackV2<PrinterInfo>() {
@@ -234,11 +251,11 @@ public class MainDialogFragment extends DialogFragment {
     }
 
 
-    public void processPrinterStatus(Status status){
+    public void processPrinterStatus(Status status) {
         TerminalManagerFactory.get().parsePrinterStatus(code2message, status);
         adapter.updateItems(code2message.values());
 
-        if(code2message.isEmpty()){
+        if (code2message.isEmpty()) {
             tryClosePrinterPanel();
         } else {
             printerLayout.setVisibility(View.VISIBLE);
@@ -246,15 +263,15 @@ public class MainDialogFragment extends DialogFragment {
 
     }
 
-    public void processPrinterError(String message){
+    public void processPrinterError(String message) {
         printerLayout.setVisibility(View.VISIBLE);
         printerErrorMessageLayout.setVisibility(View.VISIBLE);
         printerErrorButton.setVisibility(View.VISIBLE);
         printerErrorMessage.setText(message);
     }
 
-    private void tryClosePrinterPanel(){
-        if(code2message.isEmpty() && !printerErrorMessageLayout.isShown()){
+    private void tryClosePrinterPanel() {
+        if (code2message.isEmpty() && !printerErrorMessageLayout.isShown()) {
             printerLayout.setVisibility(View.GONE);
             // printer is fixed, cut paper
             listener.onPrinterReady();
@@ -263,8 +280,8 @@ public class MainDialogFragment extends DialogFragment {
     }
 
     private void dismissDialog() {
-        if(!authLayout.isShown() && !printerLayout.isShown()
-                && !barcodeLayout.isShown() && !updateLayout.isShown() && !loginLayout.isShown()){
+        if (!authLayout.isShown() && !printerLayout.isShown()
+                && !barcodeLayout.isShown() && !updateLayout.isShown() && !loginLayout.isShown()) {
             /*
             è possibile dismettere il dialog anche mentre l'applicazione è in pausa.
             Durante la ripresa è possibile che lo stato del dialog sia andato perso
@@ -273,11 +290,11 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    public void processAuthStatus(String message, boolean showReload, boolean finish){
+    public void processAuthStatus(String message, boolean showReload, boolean finish) {
         isAuthContext = true;
-        if(finish){
+        if (finish) {
             authLayout.setVisibility(View.GONE);
-            if(barcodeLayout.isShown()){
+            if (barcodeLayout.isShown()) {
                 listener.onRetryBarcode();
             }
             dismissDialog();
@@ -288,11 +305,11 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    public void processICTStatus(String message, boolean showReload, boolean finish){
+    public void processICTStatus(String message, boolean showReload, boolean finish) {
         isAuthContext = false;
-        if(finish){
+        if (finish) {
             authLayout.setVisibility(View.GONE);
-            if(barcodeLayout.isShown()){
+            if (barcodeLayout.isShown()) {
                 listener.onRetryBarcode();
             }
             dismissDialog();
@@ -303,8 +320,8 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    public void processBarcodeStatus(String message, boolean showReload, boolean finish){
-        if(finish){
+    public void processBarcodeStatus(String message, boolean showReload, boolean finish) {
+        if (finish) {
             barcodeLayout.setVisibility(View.GONE);
             dismissDialog();
         } else {
@@ -314,8 +331,8 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    public void processUpdateStatus(String message, boolean finish){
-        if(finish){
+    public void processUpdateStatus(String message, boolean finish) {
+        if (finish) {
             updateLayout.setVisibility(View.GONE);
             dismissDialog();
         } else {
@@ -324,9 +341,9 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    public void requestLoginCredential(String errorMessage, boolean finish){
+    public void requestLoginCredential(String errorMessage, boolean finish) {
         Log.d(TAG, "requestLoginCredential() called with: errorMessage = [" + errorMessage + "], finish = [" + finish + "]");
-        if(finish){
+        if (finish) {
             passwordEditText.setText(""); //reset campo pwd
             loginLayout.setVisibility(View.GONE);
             globalLayout.setVisibility(View.VISIBLE);
@@ -336,8 +353,8 @@ public class MainDialogFragment extends DialogFragment {
             loginLayout.setVisibility(View.VISIBLE);
             globalLayout.setVisibility(View.GONE);
             userEditText.requestFocus();
-            if(null != errorMessage
-                && !TextUtils.isEmpty(errorMessage)){
+            if (null != errorMessage
+                    && !TextUtils.isEmpty(errorMessage)) {
 //                loginMessage.setVisibility(View.VISIBLE);
                 loginMessage.setText(errorMessage);
             } else {
@@ -347,25 +364,25 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    public boolean isAuthShown(){
+    public boolean isAuthShown() {
         return authLayout.isShown() || loginLayout.isShown();
     }
 
-    public boolean isUpdateShown(){
+    public boolean isUpdateShown() {
         return updateLayout.isShown();
     }
 
-    public boolean isPrinterShown(){
+    public boolean isPrinterShown() {
         return printerLayout.isShown();
     }
 
-    private void closeKeyboard(View v){
+    private void closeKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
-    private boolean verifyUsername(String username){
-        if(TextUtils.isEmpty(username)){
+    private boolean verifyUsername(String username) {
+        if (TextUtils.isEmpty(username)) {
             userLayoutText.setError("Campo obbligatorio");
             return false;
         } else {
@@ -374,8 +391,8 @@ public class MainDialogFragment extends DialogFragment {
         }
     }
 
-    private boolean verifyPassword(String password){
-        if(TextUtils.isEmpty(password)){
+    private boolean verifyPassword(String password) {
+        if (TextUtils.isEmpty(password)) {
             pwdLayoutText.setError("Campo obbligatorio");
             return false;
         } else {
