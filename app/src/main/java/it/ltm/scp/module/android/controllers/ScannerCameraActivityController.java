@@ -135,7 +135,7 @@ public class ScannerCameraActivityController extends WebSocketController {
                 try {
                     isBcrUpdating = false;
                     getView().processBarcodeStatus(ScannerStatus.MESSAGE_REBOOT, false, true);
-                    getView().retry();
+                    getView().retry(null);
                 } catch (Exception e) {
                     return;
                 }

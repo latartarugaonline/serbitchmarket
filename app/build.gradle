@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+//apply plugin: 'com.android.library' //TODO LIBRAY
+
 // Init Lottomatica Release keystore properties
 def keystorePropertiesFile = rootProject.file("ltm_keystore.properties")
 def keystoreProperties = new Properties()
@@ -13,8 +15,8 @@ android {
         minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 25
-        versionCode 91
-        versionName "0.8.0"
+        versionCode 93
+        versionName "0.8.2"
         project.ext.set("archivesBaseName", "scp_android_app-" + defaultConfig.versionName)
         buildConfigField 'String', 'IPOS_MIN', IPOS_MIN_VERSION
         buildConfigField 'String', 'IGP_MIN', IGP_MIN_VERSION
@@ -69,7 +71,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:27.0.0'
     implementation 'com.android.support:design:27.0.0'
-    implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'

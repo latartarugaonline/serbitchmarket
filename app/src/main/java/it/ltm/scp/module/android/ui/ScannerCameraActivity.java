@@ -32,11 +32,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import it.ltm.scp.module.android.R;
 import it.ltm.scp.module.android.api.APICallbackV2;
 import it.ltm.scp.module.android.controllers.ScannerCameraActivityController;
@@ -44,7 +40,6 @@ import it.ltm.scp.module.android.devices.scanner.DeviceScanner;
 import it.ltm.scp.module.android.managers.ConnectionManager;
 import it.ltm.scp.module.android.managers.ConnectionManagerFactory;
 import it.ltm.scp.module.android.managers.TerminalStatusManager;
-import it.ltm.scp.module.android.model.devices.scanner.ImageRequest;
 import it.ltm.scp.module.android.model.devices.scanner.ImageRequestWrapper;
 import it.ltm.scp.module.android.model.devices.scanner.ScannerInfo;
 import it.ltm.scp.module.android.model.devices.scanner.VideoResponse;
@@ -55,46 +50,20 @@ import it.ltm.scp.module.android.utils.Errors;
 public class ScannerCameraActivity extends BaseDialogActivity {
 
     public static final String MESSAGE_TAKE_SNAPSHOT = "Acquisizione foto in corso";
-    @BindView(R.id.surface_video)
+
     WebView mWebView;
-
-    @BindView(R.id.layout_video_img)
     ImageView mImageView;
-
-    @BindView(R.id.layout_video_viewfinder)
     View mViewfinderView;
-
-    @BindView(R.id.layout_video_panel_right)
     View mPanelView;
-
-    @BindView(R.id.video_progress_layout)
     View mProgressLayout;
-
-    @BindView(R.id.video_progress_text)
     TextView mProgressMessage;
-
-    @BindView(R.id.text_bcr_camera_label)
     TextView mImageLabelView;
-
-    @BindView(R.id.video_progress)
     ProgressBar mProgressBar;
-
-    @BindView(R.id.video_retry_button)
     Button mRetryButton;
-
-    @BindView(R.id.button_video_scatta)
     View mScattaButton;
-
-    @BindView(R.id.button_video_accetta)
     View mAccettaButton;
-
-    @BindView(R.id.button_video_rifiuta)
     View mRifiutaButton;
-
-    @BindView(R.id.button_bcr_camera_back)
     ImageView mBackButton;
-
-    @BindView(R.id.layout_video_root)
     ViewGroup mRootLayout;
 
     private TerminalStatusManager mTerminalStatusManager = new TerminalStatusManager();
@@ -120,21 +89,19 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
     private Bitmap mPreviewBitmap;
     private String mStreamUrl = "http://192.168.99.1:8080/?action=stream"; //default
-    private String HTML_PAGE_PATH ="html/scanner_stream.html";
-    private String HTML_IDC_PAGE_PATH ="file:///android_asset/html/scanner_stream_idc.html";
-
+    private String HTML_PAGE_PATH = "html/scanner_stream.html";
+    private String HTML_IDC_PAGE_PATH = "file:///android_asset/html/scanner_stream_idc.html";
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private SwitchModeAfterTimeout timerTask;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_bcr_camera);
-        ButterKnife.bind(this);
 
+        setupView();
 
         mImageRequestWrapper = (ImageRequestWrapper) getIntent().getSerializableExtra(INTENT_DATA);
 
@@ -163,13 +130,26 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
         useIdc = getIntent().getBooleanExtra(INTENT_IDC_PREFERRED, false);
         idcTimeout = getIntent().getIntExtra(INTENT_IDC_TIMEOUT, 0);
-
         timerTask = new SwitchModeAfterTimeout();
-
         initWebView();
-
         mController = new ScannerCameraActivityController(mImageRequestWrapper.getImageRequestList(), this);
+    }
 
+    private void setupView() {
+        mWebView = findViewById(R.id.surface_video);
+        mImageView = findViewById(R.id.layout_video_img);
+        mViewfinderView = findViewById(R.id.layout_video_viewfinder);
+        mPanelView = findViewById(R.id.layout_video_panel_right);
+        mProgressLayout = findViewById(R.id.video_progress_layout);
+        mProgressMessage = findViewById(R.id.video_progress_text);
+        mImageLabelView = findViewById(R.id.text_bcr_camera_label);
+        mProgressBar = findViewById(R.id.video_progress);
+        mRetryButton = findViewById(R.id.video_retry_button);
+        mScattaButton = findViewById(R.id.button_video_scatta);
+        mAccettaButton = findViewById(R.id.button_video_accetta);
+        mRifiutaButton = findViewById(R.id.button_video_rifiuta);
+        mBackButton = findViewById(R.id.button_bcr_camera_back);
+        mRootLayout = findViewById(R.id.layout_video_root);
     }
 
     private void initWebView() {
@@ -186,23 +166,23 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                if(isDebuggable){
+                if (isDebuggable) {
                     return super.onConsoleMessage(consoleMessage);
                 } else {
                     return true;
                 }
             }
         });
-        if (isDebuggable)
-        { WebView.setWebContentsDebuggingEnabled(true); }
+        if (isDebuggable) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
     }
-
 
     public void updateLabelText(String text) {
         mImageLabelView.setText(text);
     }
 
-    public void runOnUiThreadDelay(Runnable runnable, long millis){
+    public void runOnUiThreadDelay(Runnable runnable, long millis) {
         mImageLabelView.postDelayed(runnable, millis);
     }
 
@@ -250,16 +230,15 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         backButton();
     }
 
-    @OnClick(R.id.video_retry_button)
-    public void retry() {
-        if(isFinish){
+    public void retry(View view) {
+        if (isFinish) {
             finishActivityAndRestoreScannerMode();
         } else {
             startPreview();
         }
     }
 
-    public void startPreview(){
+    public void startPreview() {
         Log.d(TAG, "startPreview() called");
         switchLayout(STATE_PROGRESS);
         setMessage(MESSAGE_START_PREVIEW);
@@ -268,7 +247,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
             @Override
             public void onFinish() {
 
-                if(useIdc){
+                if (useIdc) {
                     startPreviewWithIDCMode();
                 } else {
                     startPreviewWithCameraMode();
@@ -301,7 +280,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
             public void onResult(VideoResponse result) {
                 Log.d(TAG, "startPreviewWithCameraMode: scanner video mode set OK");
                 Log.d(TAG, "startPreviewWithCameraMode: play video");
-                if(result.getData() != null){
+                if (result.getData() != null) {
                     mStreamUrl = result.getData().getStream();
                 }
                 String page = loadHtmlFromAsset().replace("URL_BCR_STREAM", mStreamUrl);
@@ -316,7 +295,6 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         });
 
 
-
     }
 
     private void startPreviewWithIDCMode() {
@@ -326,7 +304,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
             @Override
             public void onResult(ScannerInfo result) {
-                if(result.isZebraAttached()){
+                if (result.isZebraAttached()) {
                     Log.d(TAG, "startPreviewWithIDCMode() ZEBRA scanner found, starting idc mode");
 
                     DeviceScanner.getInstance().startIdcMode(new APICallbackV2<Void>() {
@@ -370,13 +348,12 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         mWebView.stopLoading();
     }
 
-    @OnClick(R.id.button_bcr_camera_back)
     public void backButton() {
         setResult(Activity.RESULT_CANCELED, getIntent());
         finishActivityAndRestoreScannerMode();
     }
 
-    private void finishActivityAndRestoreScannerMode(){
+    private void finishActivityAndRestoreScannerMode() {
         isFinish = true;
         switchLayout(STATE_PROGRESS);
         setMessage(MESSAGE_CLOSE_ACTIVITY);
@@ -386,7 +363,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         mTerminalStatusManager.checkState(new TerminalStatusManager.StateListener() {
             @Override
             public void onFinish() {
-                if(useIdc){
+                if (useIdc) {
                     restoreScannerIdcMode();
                 } else {
                     restoreScannerCameraMode();
@@ -423,7 +400,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
             @Override
             public void onError(int code, String message, Exception e) {
                 Log.e(TAG, "closeActivity: stopping scanner video mode KO: " + message, e);
-                if(code == Errors.ERROR_NET_NOT_FOUND){
+                if (code == Errors.ERROR_NET_NOT_FOUND) {
                     Log.d(TAG, "onError: API not found, user can quit");
                     onResult(null);
                     return;
@@ -446,7 +423,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
             @Override
             public void onError(int code, String message, Exception e) {
                 LogWrapper.e(TAG, "closeActivity: stopping scanner IDC mode KO: " + message, e);
-                if(code == Errors.ERROR_NET_NOT_FOUND){
+                if (code == Errors.ERROR_NET_NOT_FOUND) {
                     Log.d(TAG, "onError: API not found, user can quit");
                     onResult(null);
                     return;
@@ -458,7 +435,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
     }
 
     public void showError(String message) {
-        if(!mImageView.isShown()) {
+        if (!mImageView.isShown()) {
             switchLayout(STATE_ERROR);
             setMessage(message);
         }
@@ -498,7 +475,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
                 mWebView.setVisibility(View.VISIBLE);
                 mViewfinderView.setVisibility(useIdc ? View.INVISIBLE : View.VISIBLE);
                 // se modalità idc attiva, attivo timeout
-                if(useIdc) startTimer();
+                if (useIdc) startTimer();
                 break;
             case STATE_IMG: // schermata di anteprima dell'immagine acquisita, possibilità di accettarla o ripetere lo scatto
                 mProgressLayout.setVisibility(View.GONE);
@@ -525,20 +502,17 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         mImageView.setImageBitmap(mPreviewBitmap);
     }
 
-    @OnClick(R.id.button_video_accetta)
-    public void acceptImage() {
+    public void acceptImage(View view) {
         mController.acceptImage(useIdc);
     }
 
-    @OnClick(R.id.button_video_rifiuta)
     public void rejectImage() {
         mController.discardImage();
         switchLayout(STATE_PROGRESS);
         mWebView.reload();
     }
 
-    @OnClick(R.id.button_video_scatta)
-    public void takeSnapshot() {
+    public void takeSnapshot(View view) {
         switchLayout(STATE_PROGRESS);
         setMessage(MESSAGE_TAKE_SNAPSHOT);
         mTerminalStatusManager.checkState(new TerminalStatusManager.StateListener() {
@@ -570,15 +544,15 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         finishActivityAndRestoreScannerMode();
     }
 
-    private String loadHtmlFromAsset(){
+    private String loadHtmlFromAsset() {
         try {
-            StringBuilder buf=new StringBuilder();
-            InputStream is=getAssets().open(HTML_PAGE_PATH);
-            BufferedReader in=
+            StringBuilder buf = new StringBuilder();
+            InputStream is = getAssets().open(HTML_PAGE_PATH);
+            BufferedReader in =
                     new BufferedReader(new InputStreamReader(is, "UTF-8"));
             String str;
 
-            while ((str=in.readLine()) != null) {
+            while ((str = in.readLine()) != null) {
                 buf.append(str);
             }
 
@@ -591,11 +565,11 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         }
     }
 
-    private void startTimer(){
+    private void startTimer() {
         mHandler.postDelayed(timerTask, idcTimeout * 1000);
     }
 
-    private void stopTimer(){
+    private void stopTimer() {
         mHandler.removeCallbacks(timerTask);
     }
 
@@ -629,7 +603,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
     class StreamingWebViewClient extends WebViewClient {
         private boolean hasError;
-//        private boolean retry_from_res_err = false; //TODO includere in prossima release
+        //        private boolean retry_from_res_err = false; //TODO includere in prossima release
         private Runnable timeoutTask = new Runnable() {
             @Override
             public void run() {
@@ -654,7 +628,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
                 return;
             }*/
             hasError = true;
-            if(ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED){
+            if (ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED) {
                 showError(Errors.ERROR_NET_IO_CHECK_WIRELESS);
             } else {
                 showError(getFormattedErrorMessage(Errors.getMap().get(Errors.ERROR_BCR_STREAMING),
@@ -667,7 +641,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             Log.e("onReceivedHttpError: ", request.getUrl() + ": " + errorResponse.getReasonPhrase() + " " + String.valueOf(errorResponse.getStatusCode()));
             hasError = true;
-            if(ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED) {
+            if (ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED) {
                 showError(Errors.ERROR_NET_IO_CHECK_WIRELESS);
             } else {
                 showError(getFormattedErrorMessage(Errors.getMap().get(Errors.ERROR_NET_IO),
@@ -684,12 +658,11 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         }
 
 
-
         @Override
         public void onPageFinished(WebView view, String url) {
             mHandler.removeCallbacks(timeoutTask);
             Log.d(TAG, "onPageFinished() called");
-            if(!hasError && !mImageView.isShown()){
+            if (!hasError && !mImageView.isShown()) {
 //                retry_from_res_err = false; //TODO includere in prossima release
                 switchLayout(STATE_PREVIEW);
             }
@@ -698,9 +671,9 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         public String getFormattedErrorMessage(String mainMessage, String log, String code) {
             String message = "";
             message += mainMessage;
-            if(log != null){
-                message += "\n \n(" +   log;
-                if(code != null){
+            if (log != null) {
+                message += "\n \n(" + log;
+                if (code != null) {
                     message += ", codice: " + code;
                 }
                 message += ")";
@@ -714,7 +687,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
         @Override
         public void run() {
-            if(useIdc){
+            if (useIdc) {
 
                 switchLayout(STATE_PROGRESS);
                 setMessage("Ripristino modalità di acquisizione con fotocamera");

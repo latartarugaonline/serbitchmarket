@@ -36,9 +36,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import it.ltm.scp.module.android.R;
 import it.ltm.scp.module.android.api.APICallback;
 import it.ltm.scp.module.android.controllers.MainActivityController;
@@ -64,48 +61,44 @@ import java.util.List;
 
 public class MainActivity extends BaseDialogActivity {
 
-    @BindView(R.id.webView)
     WebView webView;
-    @BindView(R.id.main_layout_error)
     View errorLayout;
-    @BindView(R.id.main_layout_error_message)
     TextView errorMessage;
-    @BindView(R.id.main_layout_progress)
     CustomProgressBar progressBar;
-    @BindView(R.id.main_layout_error_retry)
     View retryButton;
-
-    @BindView(R.id.main_layout_root)
     ViewGroup rootLayout;
 
     private JsMainInterface jsMainInterface;
-
     private String urlToLoad;
-
     private MainActivityController mController;
+    private Runnable mExecuteUiTransactionWhenStateIsReady;
 
     private final String TAG = MainActivity.class.getSimpleName();
-
     private final int STATE_LOADING = 0;
     private final int STATE_FINISH_OK = 1;
     private final int STATE_FINISH_KO = 2;
     private final int STATE_CONNECTING = 3;
-
     private final int ACTIVITY_REQUEST_PICTURE = 20;
     private final int ACTIVITY_REQUEST_BCR_PICTURE = 21;
     private final int SANDBOX_ACTIVITY_RESULT_REQUEST_CODE = 12345;
     private final int APM_CODE = 9999;
-
-    private Runnable mExecuteUiTransactionWhenStateIsReady;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-//        AndroidBug5497Workaround.assistActivity(this);
-        ButterKnife.bind(this);
+        setupView();
         init();
+    }
+
+    private void setupView() {
+        webView = findViewById(R.id.webView);
+        errorLayout = findViewById(R.id.main_layout_error);
+        errorMessage = findViewById(R.id.main_layout_error_message);
+        progressBar = findViewById(R.id.main_layout_progress);
+        retryButton = findViewById(R.id.main_layout_error_retry);
+        rootLayout = findViewById(R.id.main_layout_root);
     }
 
     private void init() {
@@ -227,13 +220,11 @@ public class MainActivity extends BaseDialogActivity {
         // Blocco azione di BACK
     }
 
-    @OnClick(R.id.main_layout_error_retry)
-    public void reLoadWebView() {
+    public void reLoadWebView(View view) {
         mController.loadWebView(urlToLoad);
     }
 
-    @OnClick(R.id.button_main_close)
-    public void closeApp() {
+    public void closeApp(View view) {
         finish();
     }
 

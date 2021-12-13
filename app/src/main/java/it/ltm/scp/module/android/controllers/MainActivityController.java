@@ -1,5 +1,7 @@
 package it.ltm.scp.module.android.controllers;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -30,24 +32,27 @@ import it.ltm.scp.module.android.api.APICallbackV2;
 import it.ltm.scp.module.android.devices.display.DeviceDisplay;
 import it.ltm.scp.module.android.devices.pos.DevicePos;
 import it.ltm.scp.module.android.devices.pos.PosUtils;
+import it.ltm.scp.module.android.devices.printer.DevicePrinter;
 import it.ltm.scp.module.android.devices.scanner.DeviceScanner;
+import it.ltm.scp.module.android.devices.system.DeviceSystem;
 import it.ltm.scp.module.android.devices.terminal.TerminalManagerFactory;
 import it.ltm.scp.module.android.managers.APMAppManager;
 import it.ltm.scp.module.android.managers.ConnectionManager;
 import it.ltm.scp.module.android.managers.ConnectionManagerFactory;
+import it.ltm.scp.module.android.managers.LisManager;
 import it.ltm.scp.module.android.managers.PaymentCallback;
-import it.ltm.scp.module.android.managers.TerminalStatusManager;
 import it.ltm.scp.module.android.managers.PaymentManager;
-import it.ltm.scp.module.android.devices.printer.DevicePrinter;
-import it.ltm.scp.module.android.devices.system.DeviceSystem;
 import it.ltm.scp.module.android.managers.PictureSessionManager;
 import it.ltm.scp.module.android.managers.PrinterManager;
 import it.ltm.scp.module.android.managers.PromptManager;
+import it.ltm.scp.module.android.managers.TerminalStatusManager;
 import it.ltm.scp.module.android.managers.TsnManager;
 import it.ltm.scp.module.android.managers.UploadManager;
-import it.ltm.scp.module.android.model.CIE;
 import it.ltm.scp.module.android.managers.cie.CIEReader;
 import it.ltm.scp.module.android.managers.cie.CIEReaderCallback;
+import it.ltm.scp.module.android.managers.secure.Authenticator;
+import it.ltm.scp.module.android.managers.secure.SecureManager;
+import it.ltm.scp.module.android.model.CIE;
 import it.ltm.scp.module.android.model.RestData;
 import it.ltm.scp.module.android.model.Result;
 import it.ltm.scp.module.android.model.devices.pos.gson.Auth;
@@ -59,9 +64,6 @@ import it.ltm.scp.module.android.model.devices.pos.prompt.PromptRequest;
 import it.ltm.scp.module.android.model.devices.pos.prompt.PromptResponseAsyncWrapper;
 import it.ltm.scp.module.android.model.devices.pos.tsn.TsnAsyncWrapper;
 import it.ltm.scp.module.android.model.devices.printer.gson.Document;
-import it.ltm.scp.module.android.managers.LisManager;
-import it.ltm.scp.module.android.managers.secure.Authenticator;
-import it.ltm.scp.module.android.managers.secure.SecureManager;
 import it.ltm.scp.module.android.model.devices.printer.gson.status.Status;
 import it.ltm.scp.module.android.model.devices.scanner.ImageRequest;
 import it.ltm.scp.module.android.model.devices.scanner.ImageRequestWrapper;
@@ -77,13 +79,11 @@ import it.ltm.scp.module.android.utils.Constants;
 import it.ltm.scp.module.android.utils.Errors;
 import it.ltm.scp.module.android.utils.Properties;
 
-import static android.content.Context.ACTIVITY_SERVICE;
-
 /**
  * Created by HW64 on 24/11/2016.
  */
 
-public class MainActivityController extends WebSocketController implements  Authenticator.AuthenticatorCallback,
+public class MainActivityController extends WebSocketController implements Authenticator.AuthenticatorCallback,
         PaymentCallback,
         TsnManager.TsnListener,
         LisManager.LisCallback,
@@ -101,7 +101,7 @@ public class MainActivityController extends WebSocketController implements  Auth
     private TsnManager mTsnManager;
     private LisManager mLisManager;
     private PromptManager mPromptManager;
-//    private TerminalStatusManager mIposStatusManager;
+    //    private TerminalStatusManager mIposStatusManager;
     private Handler mMainHandler;
     private Runnable mRedirectHomePagTask = new Runnable() {
         @Override
@@ -133,8 +133,7 @@ public class MainActivityController extends WebSocketController implements  Auth
         mMainHandler = new Handler(Looper.getMainLooper());
     }
 
-    public APMAppManager getAPMAppManager()
-    {
+    public APMAppManager getAPMAppManager() {
         return mAPMAppManager;
     }
 
@@ -163,13 +162,13 @@ public class MainActivityController extends WebSocketController implements  Auth
         stopIdleTimer();
     }
 
-    public void startIdleTimer(){
+    public void startIdleTimer() {
         stopIdleTimer();
         Log.d(TAG, "startIdleTimer: ");
         mMainHandler.postDelayed(mRedirectHomePagTask, TIMER_IDLE_WEBVIEW);
     }
 
-    public void stopIdleTimer(){
+    public void stopIdleTimer() {
         Log.d(TAG, "stopIdleTimer: ");
         mMainHandler.removeCallbacks(mRedirectHomePagTask);
     }
@@ -178,19 +177,19 @@ public class MainActivityController extends WebSocketController implements  Auth
         sendCallbackToJs(result, mCameraJsCallbackName);
     }
 
-    public void sendMultiImageCameraResult(){
+    public void sendMultiImageCameraResult() {
         ArrayList<String> images = CameraUtils.getCacheList();
         String jsonStart = "{\"code\":0, \"data\":[";
         String jsonEnd = "]}";
-        for (String image: images){
+        for (String image : images) {
             jsonStart += ("\"" + image + "\",");
         }
-        jsonStart = jsonStart.substring(0, jsonStart.length() -1);
+        jsonStart = jsonStart.substring(0, jsonStart.length() - 1);
         jsonStart += jsonEnd;
         CameraUtils.clearCache();
         try {
             getView().sendRawStringToJs(jsonStart, mCameraJsCallbackName);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "sendMultiImageCameraResult: ", e);
         }
     }
@@ -217,7 +216,9 @@ public class MainActivityController extends WebSocketController implements  Auth
     public void onTsnComplete(String callback, Result result) {
         try {
             getView().sendCallbackToJs(result, callback);
-        } catch (Exception e){ return; }
+        } catch (Exception e) {
+            return;
+        }
     }
 
 
@@ -259,7 +260,7 @@ public class MainActivityController extends WebSocketController implements  Auth
                 }
                 getView().onLisComplete();
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.i(TAG, "onSendDataToWebView Exception " + e.getMessage());
             Log.i(TAG, Log.getStackTraceString(e));
             return;
@@ -267,12 +268,9 @@ public class MainActivityController extends WebSocketController implements  Auth
     }
 
     @Override
-    public void onSendDataToSandbox(String scheme, String domain, String appCode, String posCode, String clientCode)
-    {
-        try
-        {
-            if(!getView().isAuthPending())
-            {
+    public void onSendDataToSandbox(String scheme, String domain, String appCode, String posCode, String clientCode) {
+        try {
+            if (!getView().isAuthPending()) {
                 Intent externalIntent = getView().getPackageManager().getLaunchIntentForPackage(domain);
                 externalIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 externalIntent.setPackage(null);
@@ -280,8 +278,7 @@ public class MainActivityController extends WebSocketController implements  Auth
                 Auth authData = AppUtils.getAuthData(getView().getApplicationContext());
                 JsonObject obj = new JsonObject();
 
-                if(AppUtils.isTokenValid(authData.getTokenExpiryDate()))
-                {
+                if (AppUtils.isTokenValid(authData.getTokenExpiryDate())) {
                     obj.addProperty("serviceUrl", Properties.get(Constants.PROP_URL_SERVICE_MARKET_BASE));
                     obj.addProperty("appCode", appCode);
                     obj.addProperty("userCode", authData.getUserCode());
@@ -291,26 +288,23 @@ public class MainActivityController extends WebSocketController implements  Auth
                     obj.addProperty("barCode", mLisManager.getCurrentBarcode());
 
                     Set<Map.Entry<String, JsonElement>> set = obj.entrySet();
-                    for(Map.Entry<String, JsonElement> entry : set)
-                    {
+                    for (Map.Entry<String, JsonElement> entry : set) {
                         String key = entry.getKey();
                         String value = entry.getValue().getAsString();
                         externalIntent.putExtra(key, value);
                     }
                     getView().startActivityForResult(externalIntent, SANDBOX_ACTIVITY_RESULT_REQUEST_CODE);
-                }
-                else
-                {
+                } else {
                     Log.d(TAG, "Token is invalid. About to reauth...");
                     onBarcodeReauth(null);
                 }
 
-                if(mLisManager != null)
+                if (mLisManager != null)
                     mLisManager.stopRunning();
 
                 getView().onLisComplete();
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.i(TAG, "onSendDataToSandbox Exception " + e.getMessage());
             Log.i(TAG, Log.getStackTraceString(e));
             return;
@@ -344,16 +338,16 @@ public class MainActivityController extends WebSocketController implements  Auth
 //            Toast.makeText(getView(), message, Toast.LENGTH_SHORT).show();
             message += " Reindirizzamento verso Service Market in corso.";
             getView().processBarcodeStatus(message, false, false);
-            if(!reloadMainPage()){
+            if (!reloadMainPage()) {
                 mMainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(mLisManager != null)
-                            mLisManager.stopRunning();
-                        getView().onLisComplete();
-                    }
-                },
-                2000);
+                                             @Override
+                                             public void run() {
+                                                 if (mLisManager != null)
+                                                     mLisManager.stopRunning();
+                                                 getView().onLisComplete();
+                                             }
+                                         },
+                        2000);
             }
         } catch (NullPointerException e) {
             return;
@@ -478,7 +472,8 @@ public class MainActivityController extends WebSocketController implements  Auth
             }
 
             @Override
-            public void onPing(String message) {}
+            public void onPing(String message) {
+            }
         });
     }
 
@@ -500,11 +495,10 @@ public class MainActivityController extends WebSocketController implements  Auth
                     Log.d(TAG, "resolveBarcode: flag: " + flag);
                     int barcodeResult = Integer.parseInt(flag);
                     if (barcodeResult == 0) {
-                        if(AppUtils.isGevSellCode(code)) {
+                        if (AppUtils.isGevSellCode(code)) {
                             Log.d(TAG, "onFinish: Barcode GeV vendita rilevato, stop lis2.0");
                             return;
-                        }
-                        else mLisManager.resolveBarcode(code);
+                        } else mLisManager.resolveBarcode(code);
                     }
                 } catch (NumberFormatException e) {
                     Log.e(TAG, "resolveBarcode: value not an int. (" + flag + ")");
@@ -532,26 +526,26 @@ public class MainActivityController extends WebSocketController implements  Auth
 
     public void onRetryBarcode() {
         String currentBarcode = mLisManager.getCurrentBarcode();
-        if(currentBarcode != null){
+        if (currentBarcode != null) {
 //            onBarcodeMessage("Nuovo tentativo in corso");
             resolveBarcode("0", currentBarcode);
         }
     }
 
-    public void onPageFinished(){
-        if(mLisManager.isRunning()){
+    public void onPageFinished() {
+        if (mLisManager.isRunning()) {
             Log.d(TAG, "onPageFinished: closing LisManager");
             mLisManager.stopRunning();
         }
         try {
             getView().onLisComplete();
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
-    public void pay(String jsonInput, String callbackName)
-    {
+    public void pay(String jsonInput, String callbackName) {
         PaymentType p = APMAppManager.paymentTypeFromJson(jsonInput);
-        if(APMAppManager.isAppCodePayment(p))
+        if (APMAppManager.isAppCodePayment(p))
             mAPMAppManager.launchAppAPM(getView(), p, APMAppManager.APM_COMMAND_PAYMENT, callbackName);
         else
             mPaymentManager.pay(p, callbackName);
@@ -582,9 +576,8 @@ public class MainActivityController extends WebSocketController implements  Auth
     }
 
 
-
     public void onPrinterReady() {
-        if(TerminalManagerFactory.get().autoCutPaperWhenStatusOK())
+        if (TerminalManagerFactory.get().autoCutPaperWhenStatusOK())
             DevicePrinter.getInstance().initPaper();
     }
 
@@ -657,10 +650,11 @@ public class MainActivityController extends WebSocketController implements  Auth
         }
     }
 
-    private void proccessUpdateStatus(String message, boolean finish){
+    private void proccessUpdateStatus(String message, boolean finish) {
         try {
             getView().processUpdateStatus(message, finish);
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
 
@@ -688,17 +682,17 @@ public class MainActivityController extends WebSocketController implements  Auth
 
     }
 
-    private void logOutAndReboot(){
+    private void logOutAndReboot() {
         logOut();
         rebootApp(4000, "Cambio carta operatore rilevato, riavvio applicazione in corso");
     }
 
-    public void logOutAndExit(){
+    public void logOutAndExit() {
         logOut();
-        getView().closeApp();
+        getView().closeApp(null);
     }
 
-    public void logOut(){
+    public void logOut() {
         AppUtils.clearAuthData(getView().getApplicationContext());
         DevicePos.getInstance().clearCache();
         CookieManager.getInstance().removeAllCookies(null);
@@ -708,7 +702,7 @@ public class MainActivityController extends WebSocketController implements  Auth
         getView().clearWebViewLocalStorage(); //cancella localstorage della pagina
     }
 
-    public void rebootApp(long duration, String message){
+    public void rebootApp(long duration, String message) {
         AppUtils.restartAppWithDialog(getView(), duration, message);
     }
 
@@ -729,7 +723,6 @@ public class MainActivityController extends WebSocketController implements  Auth
         });*/
 
 
-
         Log.d(TAG, "doUpload() called with: jsonBody = [...], url = [" + url + "], numRetry = [" + numRetry + "], retryInterval = [" + retryInterval + "], callbackName = [" + callbackName + "]");
 
         RestData dataIn = new Gson().fromJson(jsonBody, RestData.class);
@@ -742,39 +735,39 @@ public class MainActivityController extends WebSocketController implements  Auth
         postInitMultipartBuilder(url, numRetry, retryInterval);
         postAddTextPart("jsonMetadata", jsonConverted);
         postAddBinaryPart("frontImg"
-                ,dataIn.getImageFront().getFileName()
-                ,"application/octet-stream"
-                ,imgFrontContent
-                ,true);
+                , dataIn.getImageFront().getFileName()
+                , "application/octet-stream"
+                , imgFrontContent
+                , true);
 
         postAddBinaryPart("backImg"
-                ,dataIn.getImageBack().getFileName()
-                ,"application/octet-stream"
-                ,imgBackContent
-                ,true);
+                , dataIn.getImageBack().getFileName()
+                , "application/octet-stream"
+                , imgBackContent
+                , true);
 
         postMultipart(callbackName);
 
     }
 
-    public void postInitMultipartBuilder(String url, int numRetry, long retryInterval){
+    public void postInitMultipartBuilder(String url, int numRetry, long retryInterval) {
         UploadManager.getInstance().postInitMultipartBuilder(url, numRetry, retryInterval);
     }
 
-    public void postAddTextPart(String name, String value){
+    public void postAddTextPart(String name, String value) {
         UploadManager.getInstance().postAddTextPart(name, value);
     }
 
-    public void postSetTimeouts(int writeTimeout, int readTimeout){
+    public void postSetTimeouts(int writeTimeout, int readTimeout) {
         UploadManager.getInstance().postTimeoutMultipart(writeTimeout, readTimeout);
     }
 
-    public void postAddBinaryPart(String name, String filename, String mimetype, byte[] content, boolean encrypt){
+    public void postAddBinaryPart(String name, String filename, String mimetype, byte[] content, boolean encrypt) {
         Log.d(TAG, "postAddBinaryPart() called with: name = [" + name + "], filename = [" + filename + "], mimetype = [" + mimetype + "], content = [..], encrypt = [" + encrypt + "]");
         UploadManager.getInstance().postAddBinaryPart(name, filename, mimetype, content, encrypt);
     }
 
-    public void postMultipart(final String callbackName){
+    public void postMultipart(final String callbackName) {
         Log.d(TAG, "postMultipart() called with: callbackName = [" + callbackName + "]");
         UploadManager.getInstance().postMultipart(new UploadManager.ConfirmCallback() {
             @Override
@@ -895,8 +888,8 @@ public class MainActivityController extends WebSocketController implements  Auth
                     public void onResult(Result result) {
                         try {
                             String guidaLisaVersion = getView().getPackageManager().getPackageInfo(BuildConfig.PKG_GUIDA, 0).versionName;
-                            ((PosInfo)result.getData()).setGuidaLisaVersion(guidaLisaVersion);
-                        } catch (Exception e){
+                            ((PosInfo) result.getData()).setGuidaLisaVersion(guidaLisaVersion);
+                        } catch (Exception e) {
                             Log.e(TAG, "onResult: ", e);
                         }
                         sendCallbackToJs(result, callbackName);
@@ -946,7 +939,7 @@ public class MainActivityController extends WebSocketController implements  Auth
     private void processPrinterException(String message) {
         try {
             getView().processPrinterException(message);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "processPrinterException: ", e);
         }
     }
@@ -959,7 +952,7 @@ public class MainActivityController extends WebSocketController implements  Auth
         Log.d(TAG, "processPrinterStatus() called with: status = [" + status + "]");
         try {
             getView().processPrinterEvent(status);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "processPrinterStatus: ", e);
         }
     }
@@ -1005,7 +998,7 @@ public class MainActivityController extends WebSocketController implements  Auth
             Intent guidaIntent = getView().getPackageManager().getLaunchIntentForPackage(BuildConfig.PKG_GUIDA);
             guidaIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             getView().startActivity(guidaIntent);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "launchGuidaApp: ", e);
             Toast.makeText(getView(), "Manuale LIS@ non trovato", Toast.LENGTH_LONG).show();
         }
@@ -1016,7 +1009,7 @@ public class MainActivityController extends WebSocketController implements  Auth
             Intent guidaIntent = getView().getPackageManager().getLaunchIntentForPackage(id);
             guidaIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             getView().startActivity(guidaIntent);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "launchGuidaApp: ", e);
             Toast.makeText(getView(), "Funzione non disponibile", Toast.LENGTH_LONG).show();
         }
@@ -1029,10 +1022,10 @@ public class MainActivityController extends WebSocketController implements  Auth
             externalIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             externalIntent.setPackage(null);
 
-            if(extra != null){
+            if (extra != null) {
                 JsonObject root = new JsonParser().parse(extra).getAsJsonObject();
                 Set<Map.Entry<String, JsonElement>> set = root.entrySet();
-                for (Map.Entry<String, JsonElement> entry : set){
+                for (Map.Entry<String, JsonElement> entry : set) {
                     String key = entry.getKey();
                     String value = entry.getValue().getAsString();
                     Log.d(TAG, "launchAppFromIdWithExtra: + \n"
@@ -1041,7 +1034,7 @@ public class MainActivityController extends WebSocketController implements  Auth
                 }
             }
             getView().startActivityForResult(externalIntent, SANDBOX_ACTIVITY_RESULT_REQUEST_CODE);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "launchAppFromIdWithExtra: ", e);
             Toast.makeText(getView(), "Funzione non disponibile", Toast.LENGTH_LONG).show();
         }
@@ -1075,10 +1068,10 @@ public class MainActivityController extends WebSocketController implements  Auth
 
     private boolean reloadMainPage() {
         String url = Properties.get(Constants.PROP_URL_SERVICE_MARKET_BASE)
-                +  Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_CTX);
+                + Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_CTX);
         try {
             String currentUrl = getView().getCurrentUrl();
-            if(currentUrl.startsWith(url)){
+            if (currentUrl.startsWith(url)) {
                 Log.d(TAG, "reloadMainPage: Already on Main page, skip");
                 return false;
             } else {
@@ -1087,7 +1080,7 @@ public class MainActivityController extends WebSocketController implements  Auth
                 loadWebView(finalUrl);
                 return true;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "reloadMainPage: ", e);
             return false;
         }
@@ -1097,7 +1090,8 @@ public class MainActivityController extends WebSocketController implements  Auth
     private void showSnackBar(String message) {
         try {
             getView().showSnackBar(message);
-        } catch (NullPointerException e){}
+        } catch (NullPointerException e) {
+        }
     }
 
     public void showKeyboard() {
@@ -1129,7 +1123,7 @@ public class MainActivityController extends WebSocketController implements  Auth
         //l'oggetto Result rispetto allo standard è stato modificato con l'aggiunta del campo "idc",
         //verrà quindi creato il json manualmente
         String result;
-        if(PictureSessionManager.hasPicture(id)){
+        if (PictureSessionManager.hasPicture(id)) {
             JsonObject jsonRoot = new JsonObject();
             jsonRoot.addProperty("code", Errors.ERROR_OK);
             jsonRoot.addProperty("idc", PictureSessionManager.isPictureTakenWithIdcMode(id));
@@ -1138,7 +1132,7 @@ public class MainActivityController extends WebSocketController implements  Auth
         } else {
             result = new Result(Errors.ERROR_BCR_IMAGE_NOT_FOUND, Errors.getMap().get(Errors.ERROR_BCR_IMAGE_NOT_FOUND)).toJsonString();
         }
-        return  result;
+        return result;
 
 
     }
@@ -1147,16 +1141,17 @@ public class MainActivityController extends WebSocketController implements  Auth
         PictureSessionManager.clearSession();
     }
 
-    public void takeBcrPicture(String imageRequestListJson, String callbackName, boolean idcPreferred, int timeout){
+    public void takeBcrPicture(String imageRequestListJson, String callbackName, boolean idcPreferred, int timeout) {
         try {
-            ArrayList imageRequestList = new Gson().fromJson(imageRequestListJson, new TypeToken<ArrayList<ImageRequest>>(){}.getType());
+            ArrayList imageRequestList = new Gson().fromJson(imageRequestListJson, new TypeToken<ArrayList<ImageRequest>>() {
+            }.getType());
             ImageRequestWrapper imageRequestWrapper = new ImageRequestWrapper(imageRequestList, callbackName);
             getView().launchBcrCamera(imageRequestWrapper, idcPreferred, timeout);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Result nullPointerResult = new Result(Errors.ERROR_BCR_INPUT, Errors.getMap().get(Errors.ERROR_BCR_INPUT), e.getMessage());
             sendCallbackToJs(nullPointerResult, callbackName);
             Log.e(TAG, "takeBcrPicture: ", e);
-        } catch (JsonSyntaxException e){
+        } catch (JsonSyntaxException e) {
             Result errorParsingResult = new Result(Errors.ERROR_BCR_INPUT, "Errore parsing json", e.getMessage());
             sendCallbackToJs(errorParsingResult, callbackName);
             Log.e(TAG, "takeBcrPicture: ", e);
@@ -1176,13 +1171,13 @@ public class MainActivityController extends WebSocketController implements  Auth
         // Bollettini MAV, sostituzione caratteri < e > con il PIPE |
         // Qrcode avviso PA, sostituzione ; e = con PIPE |
         code = code.replaceAll("[<>;=]", "|");
-            //togli gli a capo
+        //togli gli a capo
         code = code.replaceAll("\\\\n", "");
         // pulizia carattere unicode null presente su alcuni datamatrix
         code = code.replaceAll("\\\\u0000", "");
 
 
-        if(AppUtils.barcodeValid(code)){
+        if (AppUtils.barcodeValid(code)) {
             onBarcodeReceived(code);
         } else {
             Log.d(TAG, "resolveBarcode: BARCODE INVALID: " + code);
@@ -1195,13 +1190,13 @@ public class MainActivityController extends WebSocketController implements  Auth
     public void onBarcodeStatusEvent(ScannerStatus status) {
         Log.d(TAG, "onBarcodeStatusEvent() called with: status = [" + status + "]");
         // Ignored
-        if(ScannerStatus.SCANNER_ZEBRA.equalsIgnoreCase(status.getScanner())
-            && ScannerStatus.STATUS_READY.equalsIgnoreCase(status.getStatus())){
-                try {
-                    getView().processBarcodeStatus("", false, true);
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "onBarcodeStatusEvent: view is null");
-                }
+        if (ScannerStatus.SCANNER_ZEBRA.equalsIgnoreCase(status.getScanner())
+                && ScannerStatus.STATUS_READY.equalsIgnoreCase(status.getStatus())) {
+            try {
+                getView().processBarcodeStatus("", false, true);
+            } catch (NullPointerException e) {
+                Log.e(TAG, "onBarcodeStatusEvent: view is null");
+            }
 
         }
     }
@@ -1210,11 +1205,11 @@ public class MainActivityController extends WebSocketController implements  Auth
     @Override
     public void onBcrUpdateEvent(ScannerUpdate update) {
         Log.d(TAG, "onBcrUpdateEvent() called with: update = [" + update + "]");
-        if(update.getCode().equals(ScannerUpdate.BCR_UPDATE_START_INSTALL)){
+        if (update.getCode().equals(ScannerUpdate.BCR_UPDATE_START_INSTALL)) {
             //show popup
             try {
                 getView().processBarcodeStatus(ScannerUpdate.BCR_UPDATE_MESSAGE, false, false);
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 Log.e(TAG, "onBcrUpdateEvent: view is null");
             }
         }
@@ -1242,11 +1237,11 @@ public class MainActivityController extends WebSocketController implements  Auth
 
     @Override
     public void onUpdateEvent(UpdateStatus status) {
-        switch (status.getGeneralState()){
-            case UpdateStatus.STATE_DOWNLOADED :
+        switch (status.getGeneralState()) {
+            case UpdateStatus.STATE_DOWNLOADED:
                 showSnackBar("Download aggiornamento completato");
                 break;
-            case UpdateStatus.STATE_DOWNLOADING :
+            case UpdateStatus.STATE_DOWNLOADING:
                 showSnackBar("Download aggiornamento LIS@");
                 break;
             case UpdateStatus.STATE_START:
@@ -1256,10 +1251,12 @@ public class MainActivityController extends WebSocketController implements  Auth
             default:
                 DeviceSystem.getInstance().updateSystemInfo();
                 try {
-                    if(getView().isUpdatePending()){
+                    if (getView().isUpdatePending()) {
                         proccessUpdateStatus(status.getMessage(), true);
                     }
-                } catch (Exception e) {break;}
+                } catch (Exception e) {
+                    break;
+                }
                 break;
         }
     }
@@ -1269,7 +1266,7 @@ public class MainActivityController extends WebSocketController implements  Auth
         AppUtils.clearAuthData(App.getContext());
         try {
             AppUtils.closeAppWithDialog(getView());
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "onPowerKeyPressed: ", e);
         }
     }
@@ -1326,23 +1323,23 @@ public class MainActivityController extends WebSocketController implements  Auth
     }
 
     public void readCIE(String mrz, final String callbackName) {
-         new CIEReader().startRead(mrz, new CIEReaderCallback() {
-             @Override
-             public void onSuccess(CIE iCie) {
-                 sendCallbackToJs(new Result(0, iCie), callbackName);
-             }
+        new CIEReader().startRead(mrz, new CIEReaderCallback() {
+            @Override
+            public void onSuccess(CIE iCie) {
+                sendCallbackToJs(new Result(0, iCie), callbackName);
+            }
 
-             @Override
-             public void onFailure(int iReason, String iReasonString) {
+            @Override
+            public void onFailure(int iReason, String iReasonString) {
                 sendCallbackToJs(new Result(iReason, iReasonString, null), callbackName);
-             }
-         });
+            }
+        });
     }
 
-    private void requestLoginCredential(String message, boolean finish){
+    private void requestLoginCredential(String message, boolean finish) {
         try {
             getView().requestLoginCredential(message, finish);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.w(TAG, "requestLoginCredential: ", e);
         }
     }

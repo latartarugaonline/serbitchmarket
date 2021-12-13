@@ -16,6 +16,7 @@
         android:background="@android:color/white">
 
         <ImageView
+            android:onClick="backButton"
             android:id="@+id/button_bcr_camera_back"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -95,6 +96,7 @@
                 android:textAlignment="center"/>
 
             <Button
+                android:onClick="retry"
                 android:id="@+id/video_retry_button"
                 android:layout_width="140dp"
                 android:layout_height="70dp"
@@ -157,6 +159,7 @@
             android:layout_marginRight="36dp">
 
             <android.support.design.widget.FloatingActionButton
+                android:onClick="takeSnapshot"
                 android:id="@+id/button_video_scatta"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -176,6 +179,7 @@
             android:layout_marginRight="36dp">
 
             <android.support.design.widget.FloatingActionButton
+                android:onClick="rejectImage"
                 android:id="@+id/button_video_rifiuta"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -195,6 +199,7 @@
             android:layout_marginTop="48dp">
 
             <android.support.design.widget.FloatingActionButton
+                android:onClick="acceptImage"
                 android:id="@+id/button_video_accetta"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

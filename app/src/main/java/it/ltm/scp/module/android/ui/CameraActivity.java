@@ -9,7 +9,6 @@ import android.hardware.Camera;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,27 +17,17 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import it.ltm.scp.module.android.R;
 import it.ltm.scp.module.android.controllers.CameraActivityController;
 import it.ltm.scp.module.android.utils.CameraUtils;
-import it.ltm.scp.module.android.websocket.WebSocketService;
 
 public class CameraActivity extends BaseDialogActivity {
 
-    @BindView(R.id.layout_camera_img)
     ImageView mPreviewImage;
-    @BindView(R.id.text_camera_label)
     TextView mLabelView;
-    @BindView(R.id.layout_camera_view)
     ViewGroup mCameraViewLayout;
-    @BindView(R.id.button_camera_accetta)
     FloatingActionButton mAccettaButton;
-    @BindView(R.id.button_camera_rifiuta)
     FloatingActionButton mRifiutaButton;
-    @BindView(R.id.button_camera_scatta)
     FloatingActionButton mScattaButton;
     CameraView mCameraView;
 
@@ -57,10 +46,21 @@ public class CameraActivity extends BaseDialogActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        ButterKnife.bind(this);
+
+        setupView();
+
         int numShots = getIntent().getIntExtra(INTENT_EXTRA_CAMERA_NUM_SHOTS, 1);
         String[] labels = getIntent().getStringArrayExtra(INTENT_EXTRA_CAMERA_LABELS);
         mController = new CameraActivityController(this, numShots, labels);
+    }
+
+    private void setupView() {
+        mPreviewImage = findViewById(R.id.layout_camera_img);
+        mLabelView = findViewById(R.id.text_camera_label);
+        mCameraViewLayout = findViewById(R.id.layout_camera_view);
+        mAccettaButton = findViewById(R.id.button_camera_accetta);
+        mRifiutaButton = findViewById(R.id.button_camera_rifiuta);
+        mCameraView = findViewById(R.id.button_camera_scatta);
     }
 
     @Override
@@ -97,24 +97,20 @@ public class CameraActivity extends BaseDialogActivity {
         mCameraViewLayout.addView(mCameraView);
     }
 
-    @OnClick(R.id.button_camera_scatta)
-    public void scatta() {
+    public void scatta(View view) {
         mController.takePicture();
     }
 
-    @OnClick(R.id.button_camera_accetta)
-    public void accept() {
+    public void accept(View view) {
         mController.acceptImage();
     }
 
-    @OnClick(R.id.button_camera_rifiuta)
-    public void rifiuta() {
+    public void rifiuta(View view) {
         hidePreview();
         mController.rejectImage();
     }
 
-    @OnClick(R.id.button_camera_back)
-    public void back() {
+    public void back(View view) {
         CameraUtils.clearCache();
         setResult(Activity.RESULT_CANCELED);
         finish();

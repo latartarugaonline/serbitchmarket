@@ -22,9 +22,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import it.ltm.scp.module.android.R;
 import it.ltm.scp.module.android.api.APICallbackV2;
 import it.ltm.scp.module.android.api.printer.PrinterAPI;
@@ -53,53 +50,52 @@ public class MainDialogFragment extends DialogFragment {
         void onCredentialAcquired(String username, String password);
     }
 
-    @BindView(R.id.layout_dialog_auth)
+    private void setupView(View view) {
+        authLayout = view.findViewById(R.id.layout_dialog_auth);
+        authMessage = view.findViewById(R.id.layout_dialog_auth_message);
+        authButton = view.findViewById(R.id.layout_dialog_auth_button);
+        printerLayout = view.findViewById(R.id.layout_dialog_printer);
+        printerErrorMessageLayout = view.findViewById(R.id.layout_dialog_printer_errormessage);
+        printerErrorMessage = view.findViewById(R.id.message_dialog_printer);
+        printerErrorButton = view.findViewById(R.id.layout_dialog_printer_button);
+        eventListView = view.findViewById(R.id.list_dialog_events);
+        barcodeLayout = view.findViewById(R.id.layout_dialog_barcode);
+        barcodeButtonLayout = view.findViewById(R.id.layout_dialog_barcode_button);
+        barcodeMessage = view.findViewById(R.id.layout_dialog_barcode_message);
+        updateLayout = view.findViewById(R.id.layout_dialog_update);
+        updateMessage = view.findViewById(R.id.layout_dialog_update_message);
+        globalLayout = view.findViewById(R.id.global_layout);
+        rootLayout = view.findViewById(R.id.dialog_root);
+        loginLayout = view.findViewById(R.id.layout_login);
+        passwordEditText = view.findViewById(R.id.edit_text_pwd);
+        userEditText = view.findViewById(R.id.edit_text_usr);
+        userLayoutText = view.findViewById(R.id.layout_text_usr);
+        pwdLayoutText = view.findViewById(R.id.layout_text_pwd);
+        accediButton = view.findViewById(R.id.view_login_button_accedi);
+        loginMessage = view.findViewById(R.id.text_login_error);
+    }
+
     View authLayout;
-    @BindView(R.id.layout_dialog_auth_message)
     TextView authMessage;
-    @BindView(R.id.layout_dialog_auth_button)
     View authButton;
-
-    @BindView(R.id.layout_dialog_printer)
     View printerLayout;
-    @BindView(R.id.layout_dialog_printer_errormessage)
     View printerErrorMessageLayout;
-    @BindView(R.id.message_dialog_printer)
     TextView printerErrorMessage;
-    @BindView(R.id.layout_dialog_printer_button)
     View printerErrorButton;
-    @BindView(R.id.list_dialog_events)
     ListView eventListView;
-
-    @BindView(R.id.layout_dialog_barcode)
     View barcodeLayout;
-    @BindView(R.id.layout_dialog_barcode_button)
     View barcodeButtonLayout;
-    @BindView(R.id.layout_dialog_barcode_message)
     TextView barcodeMessage;
-    @BindView(R.id.layout_dialog_update)
     View updateLayout;
-    @BindView(R.id.layout_dialog_update_message)
     TextView updateMessage;
-
-    @BindView(R.id.global_layout)
     View globalLayout;
-    @BindView(R.id.dialog_root)
     View rootLayout;
-
-    @BindView(R.id.layout_login)
     View loginLayout;
-    @BindView(R.id.edit_text_pwd)
     ActionMenuDisabledEditText passwordEditText;
-    @BindView(R.id.edit_text_usr)
     ActionMenuDisabledEditText userEditText;
-    @BindView(R.id.layout_text_usr)
     TextInputLayout userLayoutText;
-    @BindView(R.id.layout_text_pwd)
     TextInputLayout pwdLayoutText;
-    @BindView(R.id.view_login_button_accedi)
     View accediButton;
-    @BindView(R.id.text_login_error)
     TextView loginMessage;
 
     private HashMap<Integer, String> code2message;
@@ -147,7 +143,8 @@ public class MainDialogFragment extends DialogFragment {
             layout = inflater.inflate(R.layout.dialog_main, container);
         }
 
-        ButterKnife.bind(this, layout);
+        setupView(layout);
+
         setCancelable(false);
         eventListView.setAdapter(adapter);
 
@@ -196,7 +193,6 @@ public class MainDialogFragment extends DialogFragment {
         listener = null;
     }
 
-    @OnClick(R.id.view_login_button_accedi)
     public void accedi() {
         String user = userEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString();
@@ -204,10 +200,8 @@ public class MainDialogFragment extends DialogFragment {
             if (verifyPassword(password))
                 listener.onCredentialAcquired(user, password);
         }
-
     }
 
-    @OnClick(R.id.layout_dialog_auth_button)
     public void retryAuth() {
         if (isAuthContext)
             listener.onRetryAuth();
@@ -215,23 +209,19 @@ public class MainDialogFragment extends DialogFragment {
             listener.onRetryPosInfo();
     }
 
-    @OnClick(R.id.layout_dialog_barcode_button_riprova)
     public void retryBarcode() {
         listener.onRetryBarcode();
     }
 
-    @OnClick(R.id.layout_dialog_barcode_button_annulla)
     public void abortBarcode() {
         barcodeLayout.setVisibility(View.GONE);
         dismissDialog();
     }
 
-    @OnClick(R.id.button_dialog_close)
     public void closeApp() {
         listener.onCloseApp(getDialog());
     }
 
-    @OnClick(R.id.layout_dialog_printer_button)
     public void retryPrinterInfo() {
         printerErrorButton.setVisibility(View.GONE);
         printerErrorMessage.setText("Nuovo tentativo in corso.");

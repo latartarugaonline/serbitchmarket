@@ -9,6 +9,7 @@
     android:padding="8dp">
 
     <ImageView
+        android:onClick="closeApp"
         android:id="@+id/button_dialog_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -169,6 +170,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:onClick="abortBarcode"
                     android:id="@+id/layout_dialog_barcode_button_annulla"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -181,6 +183,7 @@
                     android:textSize="24sp" />
 
                 <TextView
+                    android:onClick="retryBarcode"
                     android:id="@+id/layout_dialog_barcode_button_riprova"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -255,6 +258,7 @@
         </LinearLayout>
 
         <TextView
+            android:onClick="retryAuth"
             android:id="@+id/layout_dialog_auth_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -335,6 +339,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:onClick="retryPrinterInfo"
                     android:id="@+id/layout_dialog_printer_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

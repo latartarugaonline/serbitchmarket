@@ -70,6 +70,7 @@
     </LinearLayout>
 
     <TextView
+        android:onClick="accedi"
         android:id="@+id/view_login_button_accedi"
         android:layout_width="160dp"
         android:layout_height="60dp"

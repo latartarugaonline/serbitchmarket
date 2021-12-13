@@ -8,7 +8,7 @@ import it.ltm.scp.module.android.model.devices.printer.gson.status.Status;
 
 /**
  * Created by HW64 on 30/03/2017.
- *
+ * <p>
  * Integrazione del popup principale con la parte View (Activity)
  * da mostrare in caso di operazioni bloccanti
  */
@@ -31,7 +31,7 @@ public abstract class BaseDialogActivity extends AppCompatActivity implements Ma
 
     public void processPrinterEvent(final Status status) {
         Log.d(TAG, "processPrinterEvent() called with: status = [" + status + "]");
-        if(status.calculateGeneralState() == 0 && !isPrinterPending()){
+        if (status.calculateGeneralState() == 0 && !isPrinterPending()) {
             //stato già OK, evita apertura e chiusura immediata del dialog (causa problemi con tastiera di sistema se aperta)
             return;
         } else {
@@ -82,13 +82,13 @@ public abstract class BaseDialogActivity extends AppCompatActivity implements Ma
         });
     }
 
-    public boolean isDialogShowing(){
+    public boolean isDialogShowing() {
         return mDialog != null && mDialog.isAdded()
                 && mDialog.getDialog() != null //fix quando in alcuni casi (es: richiesta posinfo subito dopo una doAuth) in cui mDialog risulta ancora added ma il getDialog ritorna null
                 && mDialog.getDialog().isShowing();
     }
 
-    public void onLisComplete(){
+    public void onLisComplete() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -100,36 +100,36 @@ public abstract class BaseDialogActivity extends AppCompatActivity implements Ma
 
     }
 
-    public void processBarcodeStatus(final String message, final boolean showReload, final boolean finish){
+    public void processBarcodeStatus(final String message, final boolean showReload, final boolean finish) {
         Log.e(TAG, "processBarcodeStatus: " + message);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(showDialog()){
+                if (showDialog()) {
                     mDialog.processBarcodeStatus(message, showReload, finish);
                 }
             }
         });
     }
 
-    public void processUpdateStatus(final String message, final boolean finish){
+    public void processUpdateStatus(final String message, final boolean finish) {
         Log.d(TAG, "processUpdateStatus() called with: message = [" + message + "], finish = [" + finish + "]");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(showDialog()){
+                if (showDialog()) {
                     mDialog.processUpdateStatus(message, finish);
                 }
             }
         });
     }
 
-    public void requestLoginCredential(final String errorMessage, final boolean finish){
+    public void requestLoginCredential(final String errorMessage, final boolean finish) {
         Log.d(TAG, "requestLoginCredential() called with: errorMessage = [" + errorMessage + "], finish = [" + finish + "]");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(showDialog()){
+                if (showDialog()) {
                     mDialog.requestLoginCredential(errorMessage, finish);
                 }
             }
@@ -143,14 +143,18 @@ public abstract class BaseDialogActivity extends AppCompatActivity implements Ma
         if (mDialog.isVisible() || mDialog.isAdded()) {
             return true;
         } else {
-            if(isFinishing()) {
+            if (isFinishing()) {
                 Log.d(TAG, "showDialog: activity isFinishing, dont add dialog");
                 return false;
             }
-            mDialog.show(getSupportFragmentManager(), "dialog");
-            getSupportFragmentManager().executePendingTransactions();
-            mDialog = (MainDialogFragment) getSupportFragmentManager().findFragmentByTag("dialog");
-            return true;
+            try {
+                mDialog.show(getSupportFragmentManager(), "dialog");
+                getSupportFragmentManager().executePendingTransactions();
+                mDialog = (MainDialogFragment) getSupportFragmentManager().findFragmentByTag("dialog");
+                return true;
+            } catch (IllegalStateException isex) {
+                return false;
+            }
         }
 
         /*
@@ -167,7 +171,7 @@ public abstract class BaseDialogActivity extends AppCompatActivity implements Ma
     }
 
     public void processPrinterException(String message) {
-        if(showDialog()){
+        if (showDialog()) {
             mDialog.processPrinterError(message);
         }
     }

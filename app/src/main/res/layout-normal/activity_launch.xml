@@ -7,6 +7,7 @@
     tools:context="it.ltm.scp.module.android.ui.LaunchActivity">
 
     <ImageView
+        android:onClick="closeApp"
         android:id="@+id/close_launch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
     </LinearLayout>
 
     <TextView
+        android:onClick="retry"
         android:id="@+id/button_launch_error_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

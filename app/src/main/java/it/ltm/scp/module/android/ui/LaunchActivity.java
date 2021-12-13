@@ -2,37 +2,27 @@ package it.ltm.scp.module.android.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import butterknife.OnClick;
 import it.ltm.scp.module.android.R;
 import it.ltm.scp.module.android.controllers.LaunchActivityController;
 import it.ltm.scp.module.android.utils.AppUtils;
 import it.ltm.scp.module.android.utils.CustomProgressBar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class LaunchActivity extends BaseDialogActivity {
-    @BindView(R.id.progressbar_launch)
+
     CustomProgressBar mProgress;
-    @BindView(R.id.tw_launch_main_message)
     TextView mTextView;
-    @BindView(R.id.button_launch_error_retry)
     View mRetryButton;
-    @BindView(R.id.close_launch)
     View mCloseButton;
 
     private LaunchActivityController mController;
-
-
     private final String TAG = LaunchActivity.class.getSimpleName();
-
     private final int STATE_DEFAULT = 0;
     private final int STATE_CONNECTING = 1;
     private final int STATE_ERROR = 2;
@@ -43,17 +33,26 @@ public class LaunchActivity extends BaseDialogActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-        ButterKnife.bind(this);
+
+        setupView();
+
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mController = new LaunchActivityController(this);
         mController.checkConnectivity();
         launchAppSwitcherSilently();
     }
 
+    private void setupView() {
+        mProgress = findViewById(R.id.progressbar_launch);
+        mTextView = findViewById(R.id.tw_launch_main_message);
+        mRetryButton = findViewById(R.id.button_launch_error_retry);
+        mCloseButton = findViewById(R.id.close_launch);
+    }
+
     private void launchAppSwitcherSilently() {
         Log.d(TAG, "launchAppSwitcherSilently: init");
         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("overlay.lottomatica.com.overlay");
-        if(launchIntent != null){
+        if (launchIntent != null) {
             Log.d(TAG, "launchAppSwitcherSilently: intent found, launching app..");
             launchIntent.setAction(Intent.ACTION_MAIN);
             launchIntent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -82,13 +81,11 @@ public class LaunchActivity extends BaseDialogActivity {
         super.onDestroy();
     }
 
-    @OnClick(R.id.button_launch_error_retry)
-    public void onRetry(){
+    public void retry(View view) {
         mController.retry();
     }
 
-    @OnClick(R.id.close_launch)
-    public void closeApp(){
+    public void closeApp(View view) {
         finish();
     }
 
@@ -98,11 +95,11 @@ public class LaunchActivity extends BaseDialogActivity {
         mController.onCredentialAcquired(username, password);
     }
 
-    private void setProgress(boolean progress){
+    private void setProgress(boolean progress) {
         mProgress.setVisibility(progress ? View.VISIBLE : View.GONE);
     }
 
-    private void showRetryButton(boolean show){
+    private void showRetryButton(boolean show) {
         mRetryButton.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -110,19 +107,18 @@ public class LaunchActivity extends BaseDialogActivity {
         mCloseButton.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
-    public void showSnackBar(String text){
+    public void showSnackBar(String text) {
 //        Snackbar.make(mTextView, text, Snackbar.LENGTH_LONG).show();
         AppUtils.getMessageSnackbar(mTextView, text).show();
     }
-    public void updateText(String text){
+
+    public void updateText(String text) {
         mTextView.setText(text);
     }
 
-    public void setTextSize(int size){
+    public void setTextSize(int size) {
         mTextView.setTextSize(size);
     }
-
-
 
 
     public void startApp() {
@@ -141,9 +137,8 @@ public class LaunchActivity extends BaseDialogActivity {
         }, 3000);
     }
 
-
-    public void switchLayout(int status){
-        switch (status){
+    public void switchLayout(int status) {
+        switch (status) {
             case STATE_DEFAULT:
                 setProgress(true);
                 showRetryButton(false);
@@ -166,7 +161,6 @@ public class LaunchActivity extends BaseDialogActivity {
                 break;
         }
     }
-
 
     @Override
     public void onRetryAuth() {
