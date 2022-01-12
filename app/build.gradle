@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-
-//apply plugin: 'com.android.library' //TODO LIBRAY
+//apply plugin: 'com.android.library'
 
 // Init Lottomatica Release keystore properties
 def keystorePropertiesFile = rootProject.file("ltm_keystore.properties")

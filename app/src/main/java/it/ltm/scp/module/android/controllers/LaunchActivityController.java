@@ -285,6 +285,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
                             ));
                             return;
                         }
+                        break;
                     case Errors.ERROR_NET_IO_IPOS:
                         if (ConnectionManagerFactory.getConnectionManagerInstance().getState() != ConnectionManager.State.CONNECTED) {
                             mStateManager.checkState(new TerminalStatusManager.StateListener() {
