@@ -8,10 +8,9 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.design.widget.Snackbar;
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,14 +35,18 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
+
 import it.ltm.scp.module.android.R;
 import it.ltm.scp.module.android.api.APICallback;
 import it.ltm.scp.module.android.controllers.MainActivityController;
 import it.ltm.scp.module.android.devices.display.DeviceDisplay;
 import it.ltm.scp.module.android.js.JsMainInterface;
 import it.ltm.scp.module.android.managers.ConnectionManager;
-import it.ltm.scp.module.android.managers.TerminalStatusManager;
 import it.ltm.scp.module.android.managers.PictureSessionManager;
+import it.ltm.scp.module.android.managers.TerminalStatusManager;
 import it.ltm.scp.module.android.model.Result;
 import it.ltm.scp.module.android.model.devices.pos.payment.gson.Payment;
 import it.ltm.scp.module.android.model.devices.scanner.ImageRequest;
@@ -54,10 +57,6 @@ import it.ltm.scp.module.android.utils.Constants;
 import it.ltm.scp.module.android.utils.CustomProgressBar;
 import it.ltm.scp.module.android.utils.Errors;
 import it.ltm.scp.module.android.utils.Properties;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
 
 public class MainActivity extends BaseDialogActivity {
 
@@ -72,6 +71,7 @@ public class MainActivity extends BaseDialogActivity {
     private String urlToLoad;
     private MainActivityController mController;
     private Runnable mExecuteUiTransactionWhenStateIsReady;
+    private boolean hasHttpError = false;
 
     private final String TAG = MainActivity.class.getSimpleName();
     private final int STATE_LOADING = 0;
@@ -138,11 +138,12 @@ public class MainActivity extends BaseDialogActivity {
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         CookieManager.getInstance().setAcceptCookie(true);
         setUrlToLoad(Properties.get(Constants.PROP_URL_SERVICE_MARKET_BASE)
-                +  Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_CTX)
-                +  Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_WEBVIEW));
+                + Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_CTX)
+                + Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_WEBVIEW));
 
         AppUtils.disableActionMenuButtonFromWebView(webView);
-        mController.loadWebView(urlToLoad);
+        //mController.loadWebView(urlToLoad); //TODO restore
+        mController.loadWebView("http://google.com/asd");
 
 
         // init display
@@ -213,11 +214,10 @@ public class MainActivity extends BaseDialogActivity {
 
     @Override
     public void onBackPressed() {
-        /*if (webView.canGoBack()) {
-            webView.goBack();
-        } else
-            super.onBackPressed();*/
-        // Blocco azione di BACK
+        if (hasHttpError) {
+            hasHttpError = false;
+            webView.loadUrl(urlToLoad);
+        }
     }
 
     public void reLoadWebView(View view) {
@@ -569,6 +569,7 @@ public class MainActivity extends BaseDialogActivity {
     class CustomWebViewClient extends WebViewClient {
 
         private boolean hasError = false;
+
         private final String SSL_ERROR_MESSAGE = "Errore certificato di sicurezza. Riprova o contatta il supporto.";
         private Runnable timeoutTask = new Runnable() {
             @Override
@@ -663,6 +664,7 @@ public class MainActivity extends BaseDialogActivity {
                 return;
             }
             hasError = true;
+            hasHttpError = true;
             if (mController.getConnectionState() != ConnectionManager.State.CONNECTED) {
                 showErrorLayout(Errors.ERROR_NET_IO_CHECK_WIRELESS);
             } else {
@@ -684,6 +686,7 @@ public class MainActivity extends BaseDialogActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+
             mHandler.removeCallbacks(timeoutTask);
             Log.d(TAG, "webview page END");
             mController.onPageFinished(); //notification per LisManager
