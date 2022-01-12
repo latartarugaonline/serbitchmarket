@@ -142,8 +142,8 @@ public class MainActivity extends BaseDialogActivity {
                 + Properties.get(Constants.PROP_URL_SERVICE_MARKET_PATH_WEBVIEW));
 
         AppUtils.disableActionMenuButtonFromWebView(webView);
-        //mController.loadWebView(urlToLoad); //TODO restore
-        mController.loadWebView("http://google.com/asd");
+        mController.loadWebView(urlToLoad); //TODO restore
+        //mController.loadWebView("http://google.com/asd"); //TODO test http error
 
 
         // init display
