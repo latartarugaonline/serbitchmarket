@@ -87,8 +87,10 @@ public class Errors {
         configureItDefaultMap();
         if(AppUtils.isIGP()){
             configureItIgpMap();
-        } else if(AppUtils.isSunmi()){
+        } else if (AppUtils.isSunmi()) {
             configureItSunmiMap();
+        } else if (AppUtils.isP2Pro()) {
+            configureItP2proMap();
         }
     }
 
@@ -102,6 +104,14 @@ public class Errors {
 
     private static void configureItSunmiMap() {
         MAP_ERRORS_IT.put(ERROR_NET_IO_IPOS, "Problemi di comunicazione verificare lo stato della connessione e che il terminale sia operativo.");
+        MAP_ERRORS_IT.put(ERROR_NET_SERVER_KO, "Si è verificato un problema interno a LIS Tech2. Contatta il supporto tecnico.");
+        MAP_ERRORS_IT.put(ERROR_SECURITY_CERTIFICATE_IPOS, "Errore di sicurezza, certificato di LIS Tech2 non valido.");
+        MAP_ERRORS_IT.put(INTERNAL_RECONNECT, "Connessione in corso. Prego verificare che il terminale sia operativo (luce verde)");
+        MAP_ERRORS_IT.put(ERROR_MIN_VERSION, "Versione LIS Tech2 incompatibile. Contattare il supporto per l'aggiornamento.");
+    }
+
+    private static void configureItP2proMap() {
+        MAP_ERRORS_IT.put(ERROR_NET_IO_IPOS, "Problema di comunicazione interna, riavviare il dispositivo. Se il problema persiste contattare il servizio clienti.");
         MAP_ERRORS_IT.put(ERROR_NET_SERVER_KO, "Si è verificato un problema interno a LIS Tech2. Contatta il supporto tecnico.");
         MAP_ERRORS_IT.put(ERROR_SECURITY_CERTIFICATE_IPOS, "Errore di sicurezza, certificato di LIS Tech2 non valido.");
         MAP_ERRORS_IT.put(INTERNAL_RECONNECT, "Connessione in corso. Prego verificare che il terminale sia operativo (luce verde)");
