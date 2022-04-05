@@ -60,27 +60,28 @@ public class SecureManager {
 
     private static SecureManager mInstance;
 
-    private SecureManager(){}
+    private SecureManager() {
+    }
 
-    public static synchronized SecureManager getInstance(){
-        if(mInstance == null){
+    public static synchronized SecureManager getInstance() {
+        if (mInstance == null) {
             mInstance = new SecureManager();
         }
         return mInstance;
     }
 
-    public Result initKeys(boolean shouldReset){
+    public Result initKeys(boolean shouldReset) {
         try {
             KeyStore store = getKeyStore();
 
             Log.d(TAG, "Keys: init procedure");
 
-            if(shouldReset){
+            if (shouldReset) {
                 deleteKeys();
                 Log.d(TAG, "Keys: reset = true, deleting..");
             }
 
-            if(store.containsAlias(ALIAS)){
+            if (store.containsAlias(ALIAS)) {
                 // chiavi gia' esistenti.
                 Log.d(TAG, "Keys: already exits, skip creation");
                 return new Result(OP_IGNORED);
@@ -107,7 +108,7 @@ public class SecureManager {
     private SecretKey getSecuredSymKey() throws Exception {
         KeyStore keyStore = getKeyStore();
         Log.d(TAG, "getSymKeys: initialize process");
-        if(keyStore.containsAlias(ALIAS_SYM)){
+        if (keyStore.containsAlias(ALIAS_SYM)) {
             Log.d(TAG, "getSymKeys: key already exists, skip create process.");
             SecretKey key = (SecretKey) keyStore.getKey(ALIAS_SYM, null);
             return key;
@@ -127,7 +128,7 @@ public class SecureManager {
         return key;
     }
 
-    public boolean validateKeys(){
+    public boolean validateKeys() {
         Log.d(TAG, "Keys: validating keys..");
         String expected = "test";
         String encrypted = encryptString(expected);
@@ -135,14 +136,14 @@ public class SecureManager {
         return expected.equals(decrypted);
     }
 
-    public void symmetricTest(){
+    public void symmetricTest() {
         Log.d(TAG, "symmetricTest: init test");
         try {
             String expected = "sym_test";
             byte[] encrypted = encryptFileBytes(expected.getBytes());
             byte[] decrypted = decryptFileBytes(encrypted);
             String decryptedStr = new String(decrypted);
-            if(expected.equals(decryptedStr)){
+            if (expected.equals(decryptedStr)) {
                 Log.d(TAG, "symmetricTest: test successful");
             } else {
                 Log.e(TAG, "symmetricTest: test KO: " +
@@ -208,7 +209,7 @@ public class SecureManager {
         return cipher;
     }
 
-    public String encryptString(String toEncrypt){
+    public String encryptString(String toEncrypt) {
         try {
             Cipher cipher = getCipherEncryptInstance();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -219,30 +220,17 @@ public class SecureManager {
             return Base64.encodeToString(vals, Base64.DEFAULT);
         } catch (Exception e) {
             Log.e(TAG, "", e);
-            return e.getMessage();
+            return "";
         }
     }
 
-    public String decryptString(String toDecrypt){
+    public String decryptString(String toDecrypt) {
         try {
             Cipher cipher = getCipherDecryptInstance();
-            /*CipherInputStream cipherInputStream = new CipherInputStream(new ByteArrayInputStream(Base64.decode(toDecrypt, Base64.DEFAULT)),cipher);
-            ArrayList<Byte> values = new ArrayList<>();
-            int nextByte;
-            while ((nextByte = cipherInputStream.read()) != -1) {
-                values.add((byte)nextByte);
-            }
-
-            byte[] bytes = new byte[values.size()];
-            for(int i = 0; i < bytes.length; i++) {
-                bytes[i] = values.get(i);
-            return new String(bytes, 0, bytes.length, "UTF-8");
-            }*/
-
             return new String(cipher.doFinal(Base64.decode(toDecrypt, Base64.DEFAULT)), "UTF-8");
         } catch (Exception e) {
             Log.e(TAG, "", e);
-            return e.getMessage();
+            return "";
         }
     }
 
@@ -302,7 +290,7 @@ public class SecureManager {
         return outputStream.toByteArray();
     }
 
-    public String decryptProperty(String property){
+    public String decryptProperty(String property) {
         try {
             Cipher cipher = getPropertiesCipherInstance(Cipher.DECRYPT_MODE);
             byte[] decrypt = cipher.doFinal(Base64.decode(property, Base64.DEFAULT));
@@ -314,8 +302,7 @@ public class SecureManager {
     }
 
 
-
-    public String generateToken(String timestamp, String phrase){
+    public String generateToken(String timestamp, String phrase) {
         String combined = timestamp + phrase;
         MessageDigest digest = null;
         String token = null;
@@ -327,7 +314,7 @@ public class SecureManager {
 
             for (int i = 0; i < hashed.length; i++) {
                 String hex = Integer.toHexString(0xff & hashed[i]);
-                if(hex.length() == 1) hexString.append('0');
+                if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
             token = hexString.toString();
@@ -337,7 +324,7 @@ public class SecureManager {
         return token;
     }
 
-    public void checkSignature(Context context) throws AppSignatureException{
+    public void checkSignature(Context context) throws AppSignatureException {
         String message = "La firma attuale non coincide con la firma originale";
         try {
             PackageManager manager = context.getPackageManager();
@@ -346,7 +333,7 @@ public class SecureManager {
 
             Signature signature = appInfo.signatures[0];
             int hash = signature.hashCode();
-            if(hash != Integer.parseInt(Properties.get(Constants.PROP_APP_SIGNATURE_HASH))){
+            if (hash != Integer.parseInt(Properties.get(Constants.PROP_APP_SIGNATURE_HASH))) {
                 throw new AppSignatureException(message);
             }
 
