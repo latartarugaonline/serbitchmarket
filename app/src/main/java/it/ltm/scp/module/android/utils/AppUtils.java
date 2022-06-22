@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.design.BuildConfig;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import it.ltm.scp.module.android.BuildConfig;
+
 import it.ltm.scp.module.android.devices.printer.DocumentBuilderImpl;
 import it.ltm.scp.module.android.model.devices.pos.gson.Auth;
 import it.ltm.scp.module.android.model.devices.printer.gson.Document;
@@ -46,6 +47,7 @@ public class AppUtils {
     public static final String TERMINAL_SUNMI = "T2lite";
     public static final String TERMINAL_SUNMI_LITE = "D2s_LITE_D";
     public static final String TERMINAL_P2_PRO = "P2_PRO";
+    public static final String TERMINAL_SUNMI_S = "T2s_LITE";
     public static Document voidDocument;
 
     static {
@@ -80,7 +82,7 @@ public class AppUtils {
     public static boolean isIGP(){
         return Build.MODEL.equals(TERMINAL_IGP) || Build.MODEL.contains(TERMINAL_IGP_2);
     }
-
+ 
     public static boolean isSunmi(){
         return Build.MODEL.contains(TERMINAL_SUNMI);
     }
@@ -95,6 +97,10 @@ public class AppUtils {
 
     public static String getDeviceFirmware(){
         return Build.VERSION.RELEASE;
+    }
+
+    public static boolean isSunmiS(){
+        return Build.MODEL.equals(TERMINAL_SUNMI_S);
     }
 
     public static String getAppVersion(){return BuildConfig.VERSION_NAME;}
