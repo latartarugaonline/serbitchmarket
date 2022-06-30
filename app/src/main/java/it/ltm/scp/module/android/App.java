@@ -21,7 +21,7 @@ import it.ltm.scp.module.android.websocket.WebSocketService;
  * Created by HW64 on 08/03/2017.
  */
 
-public class App extends Application implements LifecycleObserver {
+public class  App extends Application implements LifecycleObserver {
 
     private static Context mContext;
     private final String TAG = App.class.getSimpleName();

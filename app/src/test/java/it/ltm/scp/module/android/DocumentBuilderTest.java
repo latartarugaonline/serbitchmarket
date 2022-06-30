@@ -1,10 +1,24 @@
 package it.ltm.scp.module.android;
 
+import android.util.Base64;
+import android.util.Log;
+
 import it.ltm.scp.module.android.devices.printer.DocumentBuilderImpl;
 import it.ltm.scp.module.android.exceptions.InvalidArgumentException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by HW64 on 07/09/2016.
@@ -301,6 +315,29 @@ public class DocumentBuilderTest {
     @Test
     public void setQrCodeTest9() throws InvalidArgumentException {
         builder.setQrCode("prova1", 1, 3, 5, 8);
+    }
+
+    @Test
+    public void decryptProperty() {
+        String property="JK3EYqkL9dJKSGPZbxMqrZecybCwAI3Uc+zC9LO2LzbuPkzrsbmO3BPaPMahZhWb";
+        try {
+            Cipher cipher = getPropertiesCipherInstance(Cipher.DECRYPT_MODE);
+            byte[] decrypt = cipher.doFinal(Base64.decode(property, Base64.DEFAULT));
+            System.out.println(new String(decrypt, "UTF-8"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    private Cipher getPropertiesCipherInstance(int mode) throws NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        byte[] decodedKey = Base64.decode(BuildConfig.PK, Base64.DEFAULT);
+        SecretKey key = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+        Cipher cipher = null;
+        cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        IvParameterSpec iv = new IvParameterSpec(BuildConfig.KIV.getBytes("UTF-8"));
+        cipher.init(mode, key, iv);
+        return cipher;
     }
 
 

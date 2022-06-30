@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+
 import it.ltm.scp.module.android.BuildConfig;
 import it.ltm.scp.module.android.managers.ConnectionManager;
 import it.ltm.scp.module.android.managers.ConnectionManagerDefaultImpl;

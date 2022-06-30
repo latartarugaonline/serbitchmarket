@@ -54,6 +54,7 @@ public class Constants {
     public static final String DEVICE_SUNMI = "T2LITE";
     public static final String DEVICE_SUNMI_LITE = "D2SLITE";
     public static final String DEVICE_P2_PRO = "P2PRO";
+    public static final String DEVICE_DEVICE_SUNMI_S = "T2s_LITE";
 
     //tipo app
     public static final String APP_CODE = "00000";
@@ -68,4 +69,8 @@ public class Constants {
     //p2pro
     public static final String URL_API_REST_P2PRO = "http://localhost:8081/";
     public static final String URL_WEB_SOCKET_P2PRO = "http://localhost:8081/";
+
+    //T2S_LITE
+    public static final String URL_API_REST_T2S_LITE = "http://localhost:8080/";
+    public static final String URL_WEB_SOCKET_T2S_LITE = "http://localhost:8080/";
 }
