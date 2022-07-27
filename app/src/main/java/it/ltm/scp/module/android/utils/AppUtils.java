@@ -47,7 +47,7 @@ public class AppUtils {
     public static final String TERMINAL_SUNMI = "T2lite";
     public static final String TERMINAL_SUNMI_LITE = "D2s_LITE_D";
     public static final String TERMINAL_P2_PRO = "P2_PRO";
-    public static final String TERMINAL_SUNMI_S = "T2s_LITE";
+    public static final String TERMINAL_SUNMI_S = "T2s_LITE-LIS";
     public static Document voidDocument;
 
     static {

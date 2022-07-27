@@ -5,7 +5,7 @@ import it.ltm.scp.module.android.utils.Constants;
 public class TerminalManagerSunmiSImpl extends TerminalManagerIGP2030SImpl{
         @Override
         public String getDeviceName() {
-            return Constants.DEVICE_DEVICE_SUNMI_S;
+            return Constants.DEVICE_SUNMI_S;
         }
 
     @Override
