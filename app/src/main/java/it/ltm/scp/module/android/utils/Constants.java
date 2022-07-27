@@ -54,7 +54,7 @@ public class Constants {
     public static final String DEVICE_SUNMI = "T2LITE";
     public static final String DEVICE_SUNMI_LITE = "D2SLITE";
     public static final String DEVICE_P2_PRO = "P2PRO";
-    public static final String DEVICE_SUNMI_S = "T2s_LITE-LIS";
+    public static final String DEVICE_SUNMI_S = "T2SLITE";
 
     //tipo app
     public static final String APP_CODE = "00000";
