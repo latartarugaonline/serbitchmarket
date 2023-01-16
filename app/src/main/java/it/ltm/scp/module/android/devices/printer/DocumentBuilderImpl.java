@@ -6,6 +6,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import it.ltm.scp.module.android.exceptions.InvalidArgumentException;
 import it.ltm.scp.module.android.model.devices.printer.gson.Data;
 import it.ltm.scp.module.android.model.devices.printer.gson.DataRow;
@@ -15,14 +19,11 @@ import it.ltm.scp.module.android.model.devices.printer.gson.InputDataRow;
 import it.ltm.scp.module.android.model.devices.printer.gson.InputDataRowItem;
 import it.ltm.scp.module.android.utils.CustomColumnOrderComparator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Created by HW64 on 25/08/2016.
  */
 public class DocumentBuilderImpl implements DocumentBuilder {
+
     private Document document;
     private DocumentBuilderHelper builderHelper;
     private List<Data> operationList;
@@ -30,30 +31,17 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     private int copyTextIndex;
     private Data copyTextData;
 
-/*    public DocumentBuilderImpl(Document document) {
-        this.document = document;
-        if (this.document.getData() != null) {
-            operationList = this.document.getData();
-        } else {
-            operationList = new ArrayList<>();
-        }
-
-        builderHelper = new DocumentBuilderHelper();
-    }*/
-
     public DocumentBuilderImpl() {
-//        this(new Document());
         builderHelper = new DocumentBuilderHelper();
         operationList = new ArrayList<>();
     }
-
 
     public void appendData(Data data) {
         operationList.add(data);
     }
 
     @Override
-    public void setTextForCopies(String text){
+    public void setTextForCopies(String text) {
         copyTextIndex = operationList.size();
         copyTextData = new Data.Builder()
                 .op(Data.OP_TEXT)
@@ -66,7 +54,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         InputDataRow inputDataRow = new Gson().fromJson(input, InputDataRow.class);
         int columnFactor = inputDataRow.getColumnGroup();
         List<DataRow> columns = new ArrayList<>();
-        for(InputDataRowItem item : inputDataRow.getColumns()){
+        for (InputDataRowItem item : inputDataRow.getColumns()) {
             columns.add(new DataRow(columnFactor, item));
         }
         this.operationList.add(new Data.Builder()
@@ -78,11 +66,12 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     @Override
     public void setCustomRow(String inputData) {
-        List<InputCustomDataRow> columnList = new Gson().fromJson(inputData, new TypeToken<List<InputCustomDataRow>>(){}.getType());
+        List<InputCustomDataRow> columnList = new Gson().fromJson(inputData, new TypeToken<List<InputCustomDataRow>>() {
+        }.getType());
         Collections.sort(columnList, new CustomColumnOrderComparator());
         List<DataRow> columns = new ArrayList<>();
         String font = DefaultPrinterConfig.getFont();   // inizializzo con font di default
-        for (InputCustomDataRow column : columnList){
+        for (InputCustomDataRow column : columnList) {
             columns.add(new DataRow(column));
             font = column.getFont() != null ? column.getFont() : font; //FIXME fix se font non è settato (null)
         }
@@ -97,7 +86,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
                     .value(columns)
                     .build());
         }
-
     }
 
     @Override
@@ -137,7 +125,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
                 .value(text)
                 .build());
     }
-
 
     @Override
     public void setFeed(int value, String direction) throws InvalidArgumentException {
@@ -270,7 +257,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     @Override
     public void setImage(String format, String align, int width, int height, String encoded, int zoom) throws InvalidArgumentException {
-
         builderHelper.setImage(format, align, width, height, encoded, zoom);
         operationList.add(new Data.Builder()
                 .op(Data.OP_CMD)
@@ -282,7 +268,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
                 .encoded(encoded)
                 .zoom(zoom)
                 .build());
-
     }
 
     @Override
@@ -320,15 +305,14 @@ public class DocumentBuilderImpl implements DocumentBuilder {
                 .build());
     }
 
-
     public Document build() {
         document = new Document();
         document.addData(operationList);
         return document;
     }
 
-    public Document buildCopy(){
-        if(copyTextIndex > -1 && copyTextData != null){
+    public Document buildCopy() {
+        if (copyTextIndex > -1 && copyTextData != null) {
             operationList.add(copyTextIndex, copyTextData);
             copyTextIndex = -1;
             copyTextData = null;
@@ -336,15 +320,11 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         return build();
     }
 
-
     public void clear() {
         operationList.clear();
     }
 
-
     public DocumentBuilderImpl getBuilder() {
         return this;
     }
-
-
 }

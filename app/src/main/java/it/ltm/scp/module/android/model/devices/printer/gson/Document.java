@@ -3,7 +3,7 @@ package it.ltm.scp.module.android.model.devices.printer.gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,14 +27,14 @@ public class Document {
         this.data = data;
     }
 
-    public void addData(List<Data> mData){
-        if(this.data == null){
-            this.data = new ArrayList<>(mData.size());
+    public void addData(List<Data> mData) {
+        if (this.data == null) {
+            this.data = new LinkedList<>();
         }
         this.data.addAll(mData);
     }
 
-    public void clear(){
+    public void clear() {
         this.data.clear();
     }
 }
