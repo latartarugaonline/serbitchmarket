@@ -618,7 +618,7 @@ public class MainActivityController extends WebSocketController implements Authe
 
     public void reauthICT220(final String callbackName) {
         mPosInfoCallbackName = callbackName;
-        processICTStatus(DevicePos.ERROR_POS_AUTH_MESSAGE, true, false);
+        processICTStatus(DevicePos.getInstance().ERROR_POS_AUTH_MESSAGE, true, false);
     }
 
     public void errorICT220(final String callbackName, String message, int code) {

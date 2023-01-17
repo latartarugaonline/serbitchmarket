@@ -5,6 +5,7 @@ import android.util.Log;
 
 import it.ltm.scp.module.android.api.APICallback;
 import it.ltm.scp.module.android.api.APICallbackV2;
+import it.ltm.scp.module.android.api.pos.PosAPI;
 import it.ltm.scp.module.android.api.sm.ServiceMarketAPI;
 import it.ltm.scp.module.android.devices.pos.DevicePos;
 import it.ltm.scp.module.android.devices.pos.PosUtils;
@@ -69,6 +70,7 @@ public class Authenticator extends AsynchronousMode<AuthAsyncWrapper> {
         mContext = context.getApplicationContext();
         mAuthData = new Auth();
         mServiceMarketAPI = new ServiceMarketAPI();
+        checkPinpad();
     }
 
     public void reauth(String jsCallback, PosInfo posInfo) {
@@ -163,6 +165,20 @@ public class Authenticator extends AsynchronousMode<AuthAsyncWrapper> {
         } else {
             mCallback.onAuthFailed(PosUtils.getMessageFromErrorCode(SecureManager.OP_VERIFY_FAIL), Errors.ERROR_SECURITY_INTERNAL);
         }
+    }
+
+    private void checkPinpad() {
+        new PosAPI().getPosInfo(new APICallback() {
+            @Override
+            public void onFinish(Result result) {
+                try {
+                    PosInfo posInfo = (PosInfo) result.getData();
+                    DevicePos.getInstance().setPinpadRelatedMessage(posInfo.getPOSType());
+                } catch (Exception ex) {
+                    Log.e(TAG, "Unable to read POS Type", ex);
+                }
+            }
+        });
     }
 
     private void doAuth() {

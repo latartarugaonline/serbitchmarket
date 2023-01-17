@@ -62,7 +62,7 @@ public class LogMonitorWork extends Worker {
         }
 
         if(userCode.isEmpty()
-                || userCode.equals(DevicePos.USERCODE_EMPTY)){
+                || userCode.equals(DevicePos.getInstance().USERCODE_EMPTY)){
             Log.e(TAG, "doWork: usercode not initialized: " + userCode);
             if(isMessageFromFile)
                 InternalStorage.deleteFile(fileName);

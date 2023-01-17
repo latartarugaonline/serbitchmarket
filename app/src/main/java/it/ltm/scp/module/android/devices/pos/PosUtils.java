@@ -28,49 +28,53 @@ public class PosUtils {
                 }
 
             case DevicePos.ERROR_POS_AUTH:
-                return DevicePos.ERROR_POS_AUTH_MESSAGE;
 
-            case DevicePos.ERROR_POS_ABORT:
-                return DevicePos.ERROR_POS_ABORT_MESSAGE;
-
-            case DevicePos.ERROR_POS_INTERNAL:
-                return DevicePos.ERROR_POS_INTERNAL_MESSAGE;
-
-            case DevicePos.ERROR_POS_CONNECTION:
-                return DevicePos.ERROR_POS_CONNECTION_MESSAGE;
-
-            case DevicePos.ERROR_POS_UNREACH:
-                return DevicePos.ERROR_POS_UNREACH_MESSAGE;
-
-            case DevicePos.ERROR_POS_ABORT_TIMEOUT:
-                return DevicePos.ERROR_POS_ABORT_TIMEOUT_MESSAGE;
-
-            case DevicePos.ERROR_POS_SERVER:
-                return DevicePos.ERROR_POS_SERVER_MESSAGE;
-
-            case DevicePos.ERROR_POS_PAY_ABORT:
-                return DevicePos.ERROR_POS_PAY_ABORT_MESSAGE;
-
-            case DevicePos.ERROR_POS_BUSY:
-                return DevicePos.ERROR_POS_BUSY_MESSAGE;
-
-            case DevicePos.ERROR_POS_PAY_ABORT_TIMEOUT:
-                return DevicePos.ERROR_POS_PAY_ABORT_TIMEOUT_MESSAGE;
-
-            case DevicePos.ERROR_POS_PAY_AUTH:
-                return DevicePos.ERROR_POS_AUTH_MESSAGE;
-
-            case 501: // ERROR_POS_TSN_CONF
-                return DevicePos.ERROR_POS_CONF_MESSAGE;
+            case 602:
 
             case 502: // ERROR_POS_TSN_AUTH
-                return DevicePos.ERROR_POS_AUTH_MESSAGE;
+
+            case DevicePos.ERROR_POS_PAY_AUTH:
+                return DevicePos.getInstance().ERROR_POS_AUTH_MESSAGE;
+
+            case DevicePos.ERROR_POS_ABORT:
+                return DevicePos.getInstance().ERROR_POS_ABORT_MESSAGE;
+
+            case DevicePos.ERROR_POS_INTERNAL:
+                return DevicePos.getInstance().ERROR_POS_INTERNAL_MESSAGE;
+
+            case DevicePos.ERROR_POS_CONNECTION:
+                return DevicePos.getInstance().ERROR_POS_CONNECTION_MESSAGE;
+
+            case DevicePos.ERROR_POS_UNREACH:
+                return DevicePos.getInstance().ERROR_POS_UNREACH_MESSAGE;
+
+            case DevicePos.ERROR_POS_ABORT_TIMEOUT:
+                return DevicePos.getInstance().ERROR_POS_ABORT_TIMEOUT_MESSAGE;
+
+            case DevicePos.ERROR_POS_SERVER:
+                return DevicePos.getInstance().ERROR_POS_SERVER_MESSAGE;
+
+            case DevicePos.ERROR_POS_PAY_ABORT:
+                return DevicePos.getInstance().ERROR_POS_PAY_ABORT_MESSAGE;
+
+            case DevicePos.ERROR_POS_BUSY:
+                return DevicePos.getInstance().ERROR_POS_BUSY_MESSAGE;
+
+            case DevicePos.ERROR_POS_PAY_ABORT_TIMEOUT:
+                return DevicePos.getInstance().ERROR_POS_PAY_ABORT_TIMEOUT_MESSAGE;
+
+            case 501: // ERROR_POS_TSN_CONF
+
+            case 601:
+                return DevicePos.getInstance().ERROR_POS_CONF_MESSAGE;
 
             case 503: // ERROR_POS_TSN_ABORT
                 return "Richiesta annullata esplicitamente dall’operatore.";
 
             case 504: // ERROR_POS_TSN_ABORT_TIMEOUT
-                return DevicePos.ERROR_POS_OP_ABORT_MESSAGE;
+
+            case 603:
+                return DevicePos.getInstance().ERROR_POS_OP_ABORT_MESSAGE;
 
             case 505: // ERROR_POS_TSN_CARD
                 return "Carta non valida.";
@@ -81,17 +85,8 @@ public class PosUtils {
             case 104: // TIMEOUT GENERICO
                 return "Operazione annullata per tempo scaduto";
 
-            case 601:
-                return DevicePos.ERROR_POS_CONF_MESSAGE;
-
-            case 602:
-                return DevicePos.ERROR_POS_AUTH_MESSAGE;
-
-            case 603:
-                return DevicePos.ERROR_POS_OP_ABORT_MESSAGE;
-
             case 604:
-                return DevicePos.ERROR_POS_OP_TIMEOUT;
+                return DevicePos.getInstance().ERROR_POS_OP_TIMEOUT;
 
             default:
                 return Errors.ERROR_MESSAGE_POS_DEFAULT;
