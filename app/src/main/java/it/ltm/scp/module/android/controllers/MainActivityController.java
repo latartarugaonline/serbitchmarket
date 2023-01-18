@@ -335,24 +335,18 @@ public class MainActivityController extends WebSocketController implements Authe
     @Override
     public void onBarcodeRedirect(String message) {
         try {
-//            Toast.makeText(getView(), message, Toast.LENGTH_SHORT).show();
-            message += " Reindirizzamento verso Service Market in corso.";
             getView().processBarcodeStatus(message, false, false);
-            if (!reloadMainPage()) {
-                mMainHandler.postDelayed(new Runnable() {
-                                             @Override
-                                             public void run() {
-                                                 if (mLisManager != null)
-                                                     mLisManager.stopRunning();
-                                                 getView().onLisComplete();
-                                             }
-                                         },
-                        2000);
-            }
+            mMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mLisManager != null)
+                        mLisManager.stopRunning();
+                    getView().onLisComplete();
+                }
+            }, 2000);
         } catch (NullPointerException e) {
-            return;
+            Log.e(TAG, e.getMessage(), e);
         }
-
     }
 
     @Override
