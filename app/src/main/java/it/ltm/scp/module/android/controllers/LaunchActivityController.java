@@ -109,7 +109,7 @@ public class LaunchActivityController extends WebSocketController implements Aut
     private void getPosInfo(Auth auth) {
         Log.d(TAG, "getPosInfo: start PosInfo");
         DevicePos.getInstance().clearCache();
-        DevicePos.getInstance().getPosInfo(auth, new DevicePos.PosInfoCallback() {
+        DevicePos.getInstance().getPosInfo(auth, mView.get(), new DevicePos.PosInfoCallback() {
             @Override
             public void onResult(Result result) {
                 Log.d(TAG, "getPosInfo: PosInfo OK");

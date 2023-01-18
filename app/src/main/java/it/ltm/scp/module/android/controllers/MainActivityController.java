@@ -828,7 +828,7 @@ public class MainActivityController extends WebSocketController implements Authe
         new TerminalStatusManager().checkState(new TerminalStatusManager.StateListener() {
             @Override
             public void onFinish() {
-                forwardPosInfo(callbackName);
+                forwardPosInfo(callbackName, mView.get());
             }
 
             @Override
@@ -875,9 +875,9 @@ public class MainActivityController extends WebSocketController implements Authe
         });*/
     }
 
-    private void forwardPosInfo(final String callbackName) {
+    private void forwardPosInfo(final String callbackName, Context context) {
         Auth auth = AppUtils.getAuthData(getView().getApplicationContext());
-        DevicePos.getInstance().getPosInfo(auth, new DevicePos.PosInfoCallback() {
+        DevicePos.getInstance().getPosInfo(auth, context, new DevicePos.PosInfoCallback() {
                     @Override
                     public void onResult(Result result) {
                         try {
@@ -1038,7 +1038,7 @@ public class MainActivityController extends WebSocketController implements Authe
         try {
             Auth auth = AppUtils.getAuthData(getView().getApplicationContext());
 //            DevicePos.getInstance().refreshPosInfo(auth);
-            DevicePos.getInstance().refreshPosInfo(auth, new DevicePos.PosInfoCallback() {
+            DevicePos.getInstance().refreshPosInfo(auth, mView.get(), new DevicePos.PosInfoCallback() {
                 @Override
                 public void onResult(Result result) {
                     //void

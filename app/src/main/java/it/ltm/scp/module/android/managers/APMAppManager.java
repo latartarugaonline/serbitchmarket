@@ -59,7 +59,7 @@ public class APMAppManager
     {
         this.jsCallback = iJsCallback;
         Auth auth = AppUtils.getAuthData(iMainActivity.getApplicationContext());
-        DevicePos.getInstance().getPosInfo(auth, new DevicePos.PosInfoCallback()
+        DevicePos.getInstance().getPosInfo(auth, iMainActivity, new DevicePos.PosInfoCallback()
         {
             @Override
             public void onResult(Result result)

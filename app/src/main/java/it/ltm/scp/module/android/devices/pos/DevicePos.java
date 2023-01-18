@@ -1,5 +1,6 @@
 package it.ltm.scp.module.android.devices.pos;
 
+import android.content.Context;
 import android.util.Log;
 
 import it.ltm.scp.module.android.api.APICallback;
@@ -106,24 +107,24 @@ public class DevicePos {
         new PosAPI().getAuthStatus(requestId, callback);
     }
 
-    public void getPosInfo(final Auth auth, final PosInfoCallback callback) {
+    public void getPosInfo(final Auth auth, final Context context, final PosInfoCallback callback) {
         if (mCachedPosInfo != null) {
             callback.onResult(new Result(Errors.ERROR_OK, mCachedPosInfo));
         } else {
             new PosAPI().getPosInfo(new APICallback() {
                 @Override
                 public void onFinish(Result result) {
-                    validatePosInfo(result, auth, callback);
+                    validatePosInfo(result, auth, context, callback);
                 }
             });
         }
     }
 
-    public void refreshPosInfo(final Auth auth, final PosInfoCallback callback) {
+    public void refreshPosInfo(final Auth auth, final Context context, final PosInfoCallback callback) {
         new PosAPI().getPosInfo(new APICallback() {
             @Override
             public void onFinish(Result result) {
-                validatePosInfo(result, auth, callback);
+                validatePosInfo(result, auth, context, callback);
             }
         });
     }
@@ -224,7 +225,7 @@ public class DevicePos {
         new PosAPI().getTsnAsyncStatus(requestID, callback);
     }
 
-    private void validatePosInfo(Result result, Auth auth, PosInfoCallback callback) {
+    private void validatePosInfo(Result result, Auth auth, Context context, PosInfoCallback callback) {
         if (result.getCode() == Errors.ERROR_OK) {
             PosInfo posInfo = (PosInfo) result.getData();
             if (posInfo.getPhysicalUserCode().isEmpty() || posInfo.getPhysicalUserCode().equals(USERCODE_EMPTY)) {
@@ -234,7 +235,7 @@ public class DevicePos {
                             PosUtils.parsePosCode(ERROR_POS_AUTH));
             } else {
                 //appendo informazioni versioni app e iPOS
-                posInfo.setAppVersion(AppUtils.getAppVersion());
+                posInfo.setAppVersion(AppUtils.getAppVersion(context));
                 posInfo.setTabletSerial(AppUtils.getDeviceSerial());
                 if (DeviceSystem.sysInfo != null) {
                     String IPOSVersion = TerminalManagerFactory.get().getDeviceName() + "_" + DeviceSystem.sysInfo.getSystemVersion();

@@ -136,7 +136,7 @@ public class LisManager {
 
     private void buildBarcodeRedirectData(final ServiceMarketResult serviceMarketResult, final Auth auth) {
         Log.d(TAG, "resolveBarcode: GET POS INFO - START");
-        DevicePos.getInstance().getPosInfo(auth, new DevicePos.PosInfoCallback() {
+        DevicePos.getInstance().getPosInfo(auth, mContext, new DevicePos.PosInfoCallback() {
             @Override
             public void onResult(Result result) {
                 Log.d(TAG, "resolveBarcode: GET POS INFO - END");

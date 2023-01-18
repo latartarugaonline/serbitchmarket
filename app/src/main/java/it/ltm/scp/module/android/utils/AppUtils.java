@@ -3,6 +3,8 @@ package it.ltm.scp.module.android.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -103,7 +105,17 @@ public class AppUtils {
         return Build.MODEL.equals(TERMINAL_SUNMI_S);
     }
 
-    public static String getAppVersion(){return BuildConfig.VERSION_NAME;}
+    public static String getAppVersion(Context context){
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        return "";
+    }
 
     public static Auth getAuthData(Context context){
         SharedPreferences preferences = context.getSharedPreferences(PREF_AUTH, Context.MODE_PRIVATE);
