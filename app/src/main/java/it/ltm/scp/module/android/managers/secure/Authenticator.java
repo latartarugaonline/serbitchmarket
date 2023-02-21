@@ -103,7 +103,7 @@ public class Authenticator extends AsynchronousMode<AuthAsyncWrapper> {
             Log.d(TAG, "startAuth: Signature check: OK");
 
             //root check
-            if (!AppUtils.isIGP() && RootUtils.isDeviceRooted(mContext)) {
+            if (RootUtils.isDeviceRooted(mContext)) {
                 mCallback.onAuthFailed(Errors.getMap().get(Errors.ERROR_SECURITY_ROOT),
                         Errors.ERROR_SECURITY_ROOT);
                 return;
