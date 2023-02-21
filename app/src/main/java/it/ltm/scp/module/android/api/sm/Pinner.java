@@ -23,7 +23,6 @@ public class Pinner {
                 + "\n sign 1: " + sign
                 + "\n sign 2: " + sign_dc);
         CertificatePinner pinner = new CertificatePinner.Builder()
-//                .add(smUri.getHost(), "sha1/BOGUSPIN") //fake
                 .add(smUri.getHost(), sign_dc)
                 .add(smUri.getHost(), sign)
                 .add(smUri.getHost(), sign_entrst)
