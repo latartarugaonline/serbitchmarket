@@ -2,9 +2,12 @@ package it.ltm.scp.module.android.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
+
+import it.ltm.scp.module.android.BuildConfig;
 
 /**
  * Created by HW64 on 01/02/2017.
@@ -44,10 +47,15 @@ public class RootUtils {
     }
 
     public static boolean isDeviceRooted(Context context) {
-        if(AppUtils.isIGP()){ //TODO bypass sicurezza IGP2030S
+        if (BuildConfig.DEBUG) {
+            return false;
+        }
+
+        if(AppUtils.isIGP()){
             Log.w(TAG, "isDeviceRooted: IGP detected, bypass root checks..");
             return false;
         }
+
         return checkRootMethod1() || checkRootMethod3() || checkRootMethod2(context);
     }
 }
