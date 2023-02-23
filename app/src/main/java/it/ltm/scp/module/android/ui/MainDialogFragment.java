@@ -178,6 +178,13 @@ public class MainDialogFragment extends DialogFragment {
             }
         });
 
+        accediButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                accedi();
+            }
+        });
+
         return layout;
     }
 
