@@ -73,6 +73,8 @@ public class MainDialogFragment extends DialogFragment {
         pwdLayoutText = view.findViewById(R.id.layout_text_pwd);
         accediButton = view.findViewById(R.id.view_login_button_accedi);
         loginMessage = view.findViewById(R.id.text_login_error);
+        abortBarcode = view.findViewById(R.id.layout_dialog_barcode_button_annulla);
+        retryBarcode = view.findViewById(R.id.layout_dialog_barcode_button_riprova);
     }
 
     View authLayout;
@@ -97,6 +99,8 @@ public class MainDialogFragment extends DialogFragment {
     TextInputLayout pwdLayoutText;
     View accediButton;
     TextView loginMessage;
+    TextView abortBarcode;
+    TextView retryBarcode;
 
     private HashMap<Integer, String> code2message;
     private DialogEventAdapter adapter;
@@ -182,6 +186,34 @@ public class MainDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 accedi();
+            }
+        });
+
+        authButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                retryAuth();
+            }
+        });
+
+        abortBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abortBarcode();
+            }
+        });
+
+        retryBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                retryBarcode();
+            }
+        });
+
+        printerErrorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                retryPrinterInfo();
             }
         });
 
