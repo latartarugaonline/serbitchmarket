@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import it.ltm.scp.module.android.exceptions.InvalidArgumentException;
@@ -33,7 +34,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     public DocumentBuilderImpl() {
         builderHelper = new DocumentBuilderHelper();
-        operationList = new ArrayList<>();
+        operationList = new LinkedList<>();
     }
 
     public void appendData(Data data) {
@@ -313,7 +314,12 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     public Document buildCopy() {
         if (copyTextIndex > -1 && copyTextData != null) {
-            operationList.add(copyTextIndex, copyTextData);
+            try {
+                operationList.add(copyTextIndex, copyTextData);
+            } catch (IndexOutOfBoundsException ioobEx) {
+                Log.e("DocumentBuilder", ioobEx.getMessage());
+                operationList.add(copyTextData);
+            }
             copyTextIndex = -1;
             copyTextData = null;
         }
