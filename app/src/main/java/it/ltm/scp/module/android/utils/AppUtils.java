@@ -175,7 +175,7 @@ public class AppUtils {
     }
 
     public static boolean checkAlphanumericString(String input){
-        return input.matches("^[\\p{L}\\d\\s|+\\-,./':]*"); //tutti caratteri inclusi accenti
+        return input.matches("^[\\p{L}\\d\\s|+\\-,./'_:]*"); //tutti caratteri inclusi accenti
 
         //vecchio filtro
         /*return input.matches("^[a-zA-Z0-9\\s|+-]{1,"
