@@ -14,8 +14,8 @@ android {
         minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 25
-        versionCode 106
-        versionName "1.0.3"
+        versionCode 107
+        versionName "1.0.4"
         project.ext.set("archivesBaseName", "scp_android_app-" + defaultConfig.versionName)
         buildConfigField 'String', 'IPOS_MIN', IPOS_MIN_VERSION
         buildConfigField 'String', 'IGP_MIN', IGP_MIN_VERSION

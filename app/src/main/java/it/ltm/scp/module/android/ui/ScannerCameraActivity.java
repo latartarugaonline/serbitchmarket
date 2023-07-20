@@ -227,7 +227,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
 
     @Override
     public void onBackPressed() {
-        backButton();
+        backButton(mBackButton);
     }
 
     public void retry(View view) {
@@ -348,7 +348,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         mWebView.stopLoading();
     }
 
-    public void backButton() {
+    public void backButton(View view) {
         setResult(Activity.RESULT_CANCELED, getIntent());
         finishActivityAndRestoreScannerMode();
     }
@@ -506,7 +506,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
         mController.acceptImage(useIdc);
     }
 
-    public void rejectImage() {
+    public void rejectImage(View view) {
         mController.discardImage();
         switchLayout(STATE_PROGRESS);
         mWebView.reload();
@@ -577,7 +577,7 @@ public class ScannerCameraActivity extends BaseDialogActivity {
     public void onCloseApp(Dialog dialog) {
         // chiudo l'activity seguendo il giro di ripristino barcode
         dialog.dismiss();
-        backButton();
+        backButton(mBackButton);
     }
 
     @Override
