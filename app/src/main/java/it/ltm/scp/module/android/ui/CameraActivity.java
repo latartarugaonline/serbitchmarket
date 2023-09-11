@@ -107,7 +107,7 @@ public class CameraActivity extends BaseDialogActivity {
 
     public void rifiuta(View view) {
         hidePreview();
-        mController.rejectImage();
+        mController.rejectImage(view);
     }
 
     public void back(View view) {

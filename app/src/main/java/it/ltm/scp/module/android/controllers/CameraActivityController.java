@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.View;
 
 import java.lang.ref.WeakReference;
 
@@ -141,13 +142,12 @@ public class CameraActivityController extends WebSocketController{
         }
     }
 
-    public void rejectImage() {
+    public void rejectImage(View view) {
         mCurrPictureBytes = null;
     }
 
     @Override
     public void onPrinterStatus(Status status) {
-
     }
 
     @Override
