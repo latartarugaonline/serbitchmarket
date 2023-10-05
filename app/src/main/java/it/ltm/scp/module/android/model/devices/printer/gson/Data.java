@@ -72,6 +72,9 @@ public class Data {
     private String codeset;
     @SerializedName("zoom")
     private Integer zoom;
+    @SerializedName("halftone")
+    private Integer halftone;
+
 
     //public keys
 
@@ -91,6 +94,7 @@ public class Data {
     public static final String TYPE_MATRIX = "matrix";
     public static final String TYPE_MAXICODE = "maxicode";
     public static final String TYPE_ROW = "row";
+    public static final String TYPE_BITMAP = "bitmap";
 
     // option
     public static final String OPTION_NEGATIVE = "negative";
@@ -131,6 +135,7 @@ public class Data {
         this.direction = builder._direction;
         this.codeset = builder._codeset;
         this.zoom = builder._zoom;
+        this.halftone = builder._halftone;
     }
 
     /*
@@ -305,6 +310,15 @@ public class Data {
         this.codeset = codeset;
     }
 
+    public Integer getHalftone() {
+        return halftone;
+    }
+
+    public void setHalftone(Integer halftone) {
+        this.halftone = halftone;
+    }
+
+
     /**
      * Builder class
      */
@@ -330,7 +344,13 @@ public class Data {
         private String _direction;
         private String _codeset;
         private Integer _zoom;
+        private Integer _halftone;
 
+
+        public Builder halftone(Integer _halftone) {
+            this._halftone = _halftone;
+            return this;
+        }
         public Builder op(String _op) {
             this._op = _op;
             return this;

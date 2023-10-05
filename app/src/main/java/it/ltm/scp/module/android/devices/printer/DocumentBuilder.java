@@ -56,4 +56,9 @@ interface DocumentBuilder {
     void setRow(String input);
 
     void setCustomRow(String inputData);
+
+    void setBitmap(@NonNull String format, String align, int width, int height, String encoded,int zoom, int halftone, int mode) throws InvalidArgumentException;
+
+
+
 }

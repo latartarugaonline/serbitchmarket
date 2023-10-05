@@ -89,6 +89,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         }
     }
 
+
     @Override
     public void setEol() {
         this.operationList.add(new Data.Builder()
@@ -257,6 +258,23 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     }
 
     @Override
+    public void setBitmap(@NonNull String format, String align, int width, int height, String encoded, int zoom, int halftone, int mode) throws InvalidArgumentException {
+        builderHelper.setBitmap(format,align,width,height,encoded,zoom,halftone,mode);
+        operationList.add(new Data.Builder()
+                .op(Data.OP_CMD)
+                .type(Data.TYPE_BITMAP)
+                .format(format)
+                .align(align)
+                .width(width)
+                .height(height)
+                .encoded(encoded)
+                .zoom(zoom)
+                .halftone(halftone)
+                .mode(mode)
+                .build());
+    }
+
+    @Override
     public void setImage(String format, String align, int width, int height, String encoded, int zoom) throws InvalidArgumentException {
         builderHelper.setImage(format, align, width, height, encoded, zoom);
         operationList.add(new Data.Builder()
@@ -329,6 +347,8 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     public void clear() {
         operationList.clear();
     }
+
+
 
     public DocumentBuilderImpl getBuilder() {
         return this;

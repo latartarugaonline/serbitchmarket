@@ -448,6 +448,17 @@ public class JsMainInterface {
     }
 
     @JavascriptInterface
+    public String printer_setBitmap(String format, String align, int width, int height, String encoded, int zoom, int halftone, int mode){
+        try {
+            builder.setBitmap(format, align, width, height, encoded, zoom, halftone,mode);
+            return new Result(0).toJsonString();
+        } catch (InvalidArgumentException e) {
+            Log.e(TAG, "", e);
+            return generateResultFromEx(e).toJsonString();
+        }
+    }
+
+    @JavascriptInterface
     public String printer_setImage(String format, String align, int width, int height, String encoded, int zoom){
         try {
             builder.setImage(format, align, width, height, encoded, zoom);

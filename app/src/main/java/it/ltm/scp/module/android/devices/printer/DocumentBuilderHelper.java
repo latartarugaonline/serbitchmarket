@@ -245,4 +245,37 @@ public class DocumentBuilderHelper implements DocumentBuilder {
     public void setCustomRow(String inputData) {
 
     }
+
+    @Override
+    public void setBitmap(@NonNull String format, String align, int width, int height, String encoded, int zoom, int halftone, int mode) throws InvalidArgumentException {
+        if(!format.matches("normal|double|2width|2height"))
+            throw new InvalidArgumentException("Invalid setBitmap param: " +
+                    format + ". Value must be: normal | double | 2width | 2height.");
+        if(!align.matches("left|center|right")){
+            throw new InvalidArgumentException("Invalid setBitmap param: " +
+                    align +
+                    ". Param must be \"left\"," +
+                    " \"center\", \"right\"");
+        }
+
+        if(width < 1 || width > 576)
+            throw new InvalidArgumentException("Invalid setBitmap width param: " +
+                    (width) + ". Value must be between 1-576.");
+
+
+        if(height < 1 || height > 65535)
+            throw new InvalidArgumentException("Invalid setBitmap height param: " +
+                    (height) + ". Value must be between 1-65535.");
+
+        if(zoom < 1 || zoom > 16)
+            throw new InvalidArgumentException("Invalid setBitmap width param: " +
+                    (zoom) + ". Value must be between 1-16.");
+
+        if(halftone < 1 || halftone > 4)
+            throw new InvalidArgumentException("Invalid setBitmap mode param: " +
+                    (mode) + ". Value must be between 1-4.");
+        if(mode < 1 || mode > 3)
+            throw new InvalidArgumentException("Invalid setBitmap mode param: " +
+                    (mode) + ". Value must be between 1-3.");
+    }
 }
