@@ -271,11 +271,11 @@ public class DocumentBuilderHelper implements DocumentBuilder {
             throw new InvalidArgumentException("Invalid setBitmap width param: " +
                     (zoom) + ". Value must be between 1-16.");
 
-        if(halftone < 1 || halftone > 4)
+        if(halftone < 0 || halftone > 2)
             throw new InvalidArgumentException("Invalid setBitmap mode param: " +
-                    (mode) + ". Value must be between 1-4.");
-        if(mode < 1 || mode > 3)
+                    (mode) + ". Value must be between 0-2.");
+        if(mode < 0 || mode > 2)
             throw new InvalidArgumentException("Invalid setBitmap mode param: " +
-                    (mode) + ". Value must be between 1-3.");
+                    (mode) + ". Value must be between 0-2.");
     }
 }
