@@ -14,8 +14,8 @@ android {
         minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 25
-        versionCode 109
-        versionName "1.0.6"
+        versionCode 110
+        versionName "1.0.7"
         project.ext.set("archivesBaseName", "scp_android_app-" + defaultConfig.versionName)
         buildConfigField 'String', 'IPOS_MIN', IPOS_MIN_VERSION
         buildConfigField 'String', 'IGP_MIN', IGP_MIN_VERSION
@@ -45,6 +45,7 @@ android {
             signingConfig signingConfigs.ltm_config
         }
         export {
+            signingConfig signingConfigs.ltm_config
             initWith debug
             debuggable false
             zipAlignEnabled true

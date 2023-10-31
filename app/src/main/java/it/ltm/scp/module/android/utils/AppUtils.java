@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.design.BuildConfig;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
@@ -26,11 +26,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-
 import it.ltm.scp.module.android.devices.printer.DocumentBuilderImpl;
 import it.ltm.scp.module.android.model.devices.pos.gson.Auth;
 import it.ltm.scp.module.android.model.devices.printer.gson.Document;
-import it.ltm.scp.module.android.model.devices.system.gson.update.UpdateConfig;
 import it.ltm.scp.module.android.ui.BaseDialogActivity;
 import it.ltm.scp.module.android.ui.LaunchActivity;
 
@@ -59,17 +57,18 @@ public class AppUtils {
         builder.clear();
     }
 
-    public static String getDeviceSerial(){
+    public static String getDeviceSerial() {
         String serial = "";
         try {
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method get = c.getMethod("get", String.class, String.class);
             serial = (String) get.invoke(c, "ril.serialnumber", "unknown");
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return serial;
     }
 
-    public static String getDeviceName(){
+    public static String getDeviceName() {
         String deviceName = "";
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -81,31 +80,31 @@ public class AppUtils {
         return deviceName;
     }
 
-    public static boolean isIGP(){
+    public static boolean isIGP() {
         return Build.MODEL.equals(TERMINAL_IGP) || Build.MODEL.contains(TERMINAL_IGP_2);
     }
- 
-    public static boolean isSunmi(){
+
+    public static boolean isSunmi() {
         return Build.MODEL.contains(TERMINAL_SUNMI);
     }
 
-    public static boolean isSunmiLite(){
+    public static boolean isSunmiLite() {
         return Build.MODEL.equals(TERMINAL_SUNMI_LITE);
     }
 
-    public static boolean isP2Pro(){
+    public static boolean isP2Pro() {
         return Build.MODEL.equals(TERMINAL_P2_PRO);
     }
 
-    public static String getDeviceFirmware(){
+    public static String getDeviceFirmware() {
         return Build.VERSION.RELEASE;
     }
 
-    public static boolean isSunmiS(){
+    public static boolean isSunmiS() {
         return Build.MODEL.equals(TERMINAL_SUNMI_S);
     }
 
-    public static String getAppVersion(Context context){
+    public static String getAppVersion(Context context) {
         PackageInfo pInfo = null;
         try {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -117,26 +116,26 @@ public class AppUtils {
         return "";
     }
 
-    public static Auth getAuthData(Context context){
+    public static Auth getAuthData(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_AUTH, Context.MODE_PRIVATE);
         String json = preferences.getString(PREF_AUTH_KEY, null);
         Auth auth = new Gson().fromJson(json, Auth.class);
         return auth;
     }
 
-    public static void setAuthData(Context context, Auth data){
+    public static void setAuthData(Context context, Auth data) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_AUTH, Context.MODE_PRIVATE);
         String json = new Gson().toJson(data);
         preferences.edit().putString(PREF_AUTH_KEY, json).commit();
     }
 
-    public static void clearAuthData(Context context){
+    public static void clearAuthData(Context context) {
         Log.d(TAG, "clearAuthData: ");
         SharedPreferences preferences = context.getSharedPreferences(PREF_AUTH, Context.MODE_PRIVATE);
         preferences.edit().clear().commit();
     }
 
-    public static boolean isTokenValid(String expiryDate){
+    public static boolean isTokenValid(String expiryDate) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss", Locale.ITALY);
         try {
             Date end = dateFormat.parse(expiryDate);
@@ -149,32 +148,32 @@ public class AppUtils {
         }
     }
 
-    public static Snackbar getErrorSnackbar(View view, String message){
+    public static Snackbar getErrorSnackbar(View view, String message) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         View snackbarLayout = snackbar.getView();
         snackbarLayout.setBackgroundColor(Color.RED);
-        TextView tv=(TextView)snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
+        TextView tv = (TextView) snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextSize(20);
         tv.setMaxLines(2);
         snackbar.setActionTextColor(Color.WHITE);
         return snackbar;
     }
 
-    public static Snackbar getMessageSnackbar(View view, String message){
+    public static Snackbar getMessageSnackbar(View view, String message) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         View snackbarLayout = snackbar.getView();
-        TextView tv=(TextView)snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
+        TextView tv = (TextView) snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextSize(20);
         tv.setMaxLines(2);
         return snackbar;
     }
 
-    public static String getUnixTimestamp(){
+    public static String getUnixTimestamp() {
         long timestamp = System.currentTimeMillis();
         return Long.toString(timestamp);
     }
 
-    public static boolean checkAlphanumericString(String input){
+    public static boolean checkAlphanumericString(String input) {
         return input.matches("^[\\p{L}\\d\\s|+\\-,./'_:]*"); //tutti caratteri inclusi accenti
 
         //vecchio filtro
@@ -187,44 +186,45 @@ public class AppUtils {
      * Controlla se il barcode in input appartiene alla famiglia di codici:
      * EAN-8 : 7 o 8 cifre
      * EAN-13 : 12 o 13 cifre
+     *
      * @param input barcode
      * @return true se appartiene a una delle due famiglie
      */
-    public static boolean isBarcodeEAN8or13(String input){
+    public static boolean isBarcodeEAN8or13(String input) {
         return input.matches("^([0-9]{8}$)|([0-9]{13}$)");
     }
 
-    public static boolean barcodeValid(String input){
+    public static boolean barcodeValid(String input) {
         return AppUtils.checkAlphanumericString(input);
     }
 
-    public static boolean checkCharOnlyString(String input){
+    public static boolean checkCharOnlyString(String input) {
         return input.matches("^[a-zA-Z'\\s]{1," + input.length() +
                 "}$");
     }
 
-    public static String formatUrlResource(String url){
-        if(url.contains("?")){ //tolgo query param
+    public static String formatUrlResource(String url) {
+        if (url.contains("?")) { //tolgo query param
             String[] splitQueryParam = url.split("\\?");
             url = splitQueryParam[0];
         }
         url = url.replace(Properties.get(Constants.PROP_URL_SERVICE_MARKET_BASE), ""); //tolgo base url
         String[] urlPaths = url.split("/");
         url = "";
-        for(int i=0; i < urlPaths.length; i++){
+        for (int i = 0; i < urlPaths.length; i++) {
             url += urlPaths[i] + "/";
         }
         return url;
     }
 
-    public static String getCurrentDate(){
+    public static String getCurrentDate() {
         long timestamp = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date(timestamp);
         return sdf.format(date);
     }
 
-    public static void closeAppWithDialog(final BaseDialogActivity activity){
+    public static void closeAppWithDialog(final BaseDialogActivity activity) {
         activity.processAuthStatus("Spegnimento, chiusura applicazione in corso.", false, false);
         Handler mMainHandler = new Handler(Looper.getMainLooper());
         mMainHandler.postDelayed(new Runnable() {
@@ -235,7 +235,7 @@ public class AppUtils {
         }, 3000);
     }
 
-    public static void restartAppWithDialog(final BaseDialogActivity activity, long duration, String message){
+    public static void restartAppWithDialog(final BaseDialogActivity activity, long duration, String message) {
         activity.processAuthStatus(message, false, false);
         Handler mMainHandler = new Handler(Looper.getMainLooper());
         mMainHandler.postDelayed(new Runnable() {
@@ -248,7 +248,7 @@ public class AppUtils {
         }, duration);
     }
 
-    public static Document getVoidDocument(){
+    public static Document getVoidDocument() {
         return voidDocument;
     }
 
@@ -272,30 +272,28 @@ public class AppUtils {
 
     public static boolean isGevSellCode(String code) {
 
-        if(!code.matches("^[0-9]*$") || code.isEmpty()){
+        if (!code.matches("^[0-9]*$") || code.isEmpty()) {
             return false;
         }
 
         int[] arr = new int[14];
-        int[] multipliers = {173,53,229,71,199,331,107,131,379,151,167,313,223,89};
+        int[] multipliers = {173, 53, 229, 71, 199, 331, 107, 131, 379, 151, 167, 313, 223, 89};
         int sum = 0;
         int result = 0;
 
-        if(code.length() == 16) {
-            for(int i = 0; i < 14 ; ++i)
-            {
+        if (code.length() == 16) {
+            for (int i = 0; i < 14; ++i) {
                 arr[i] = Character.getNumericValue(code.charAt(i));
-                sum+= arr[i] * multipliers[i];
+                sum += arr[i] * multipliers[i];
             }
-            sum+=41;
+            sum += 41;
             result = sum % 97;
 
             return (result == Integer.parseInt(code.substring(14)));
-        }
-        else return false;
+        } else return false;
     }
 
-    public static void disableActionMenuButtonFromWebView(WebView webView){
+    public static void disableActionMenuButtonFromWebView(WebView webView) {
         Method method = null;
         try {
             method = webView.getSettings().getClass().getMethod("setDisabledActionModeMenuItems", int.class);
@@ -312,5 +310,42 @@ public class AppUtils {
             Log.e(TAG, e.getMessage(), e);
         }
 
+    }
+
+    public static void cancellaCache(Context context) {
+        try {
+            File cacheDir = context.getCacheDir();
+            File[] cacheFiles = cacheDir.listFiles();
+            if (cacheFiles != null) {
+                for (File file : cacheFiles) {
+                    file.delete();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cancellaDati(Context context) {
+        try {
+            File dataDir = context.getFilesDir().getParentFile();
+            String[] list = dataDir.list();
+            for (String lists : list) {
+                if (!lists.equals("lib")) {
+                    deleteRecursive(new File(dataDir, lists));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        fileOrDirectory.delete();
     }
 }

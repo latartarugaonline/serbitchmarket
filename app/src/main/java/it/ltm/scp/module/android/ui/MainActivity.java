@@ -88,6 +88,8 @@ public class MainActivity extends BaseDialogActivity {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
+        AppUtils.cancellaCache(this);
+        AppUtils.cancellaDati(this);
         setupView();
         init();
     }
