@@ -35,6 +35,7 @@ public class  App extends Application implements LifecycleObserver {
         Properties.init(this);
         ConnectionManagerFactory.getConnectionManagerInstance().init(this);
         UploadManager.getInstance().init();
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(mContext));
         //init websocket service
         webSocketIntent = new Intent(this, WebSocketService.class);
         if(TerminalManagerFactory.get().getBatteryMonitor().monitorEnabled()){
