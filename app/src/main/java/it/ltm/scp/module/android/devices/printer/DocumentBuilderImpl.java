@@ -1,5 +1,7 @@
 package it.ltm.scp.module.android.devices.printer;
 
+import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -11,6 +13,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import it.ltm.scp.module.android.App;
 import it.ltm.scp.module.android.exceptions.InvalidArgumentException;
 import it.ltm.scp.module.android.model.devices.printer.gson.Data;
 import it.ltm.scp.module.android.model.devices.printer.gson.DataRow;
@@ -18,7 +21,9 @@ import it.ltm.scp.module.android.model.devices.printer.gson.Document;
 import it.ltm.scp.module.android.model.devices.printer.gson.InputCustomDataRow;
 import it.ltm.scp.module.android.model.devices.printer.gson.InputDataRow;
 import it.ltm.scp.module.android.model.devices.printer.gson.InputDataRowItem;
+import it.ltm.scp.module.android.utils.AppUtils;
 import it.ltm.scp.module.android.utils.CustomColumnOrderComparator;
+import com.lis.printk3image.K3Module;
 
 /**
  * Created by HW64 on 25/08/2016.
@@ -31,6 +36,8 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     private int copyTextIndex;
     private Data copyTextData;
+
+    Context context = App.getContext();
 
     public DocumentBuilderImpl() {
         builderHelper = new DocumentBuilderHelper();
@@ -259,7 +266,12 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     @Override
     public void setBitmap(@NonNull String format, String align, int width, int height, String encoded, int zoom, int halftone, int mode) throws InvalidArgumentException {
+        if(AppUtils.isLisa()){
+            K3Module.Companion.convert(context,encoded);
+            return;
+        }
         builderHelper.setBitmap(format,align,width,height,encoded,zoom,halftone,mode);
+
         operationList.add(new Data.Builder()
                 .op(Data.OP_CMD)
                 .type(Data.TYPE_BITMAP)
