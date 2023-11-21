@@ -48,6 +48,7 @@ public class AppUtils {
     public static final String TERMINAL_SUNMI_LITE = "D2s_LITE_D";
     public static final String TERMINAL_P2_PRO = "P2_PRO";
     public static final String TERMINAL_SUNMI_S = "T2s_LITE-LIS";
+    public static final String TERMINAL_LISA = "LISA";
     public static Document voidDocument;
 
     static {
@@ -103,6 +104,7 @@ public class AppUtils {
     public static boolean isSunmiS() {
         return Build.MODEL.equals(TERMINAL_SUNMI_S);
     }
+    public static boolean isLisa(){return Build.MODEL.equals(TERMINAL_LISA);}
 
     public static String getAppVersion(Context context) {
         PackageInfo pInfo = null;
