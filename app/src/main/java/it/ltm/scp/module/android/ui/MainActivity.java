@@ -191,6 +191,7 @@ public class MainActivity extends BaseDialogActivity {
         }
     }
 
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
@@ -205,6 +206,8 @@ public class MainActivity extends BaseDialogActivity {
         mController.detach(getApplicationContext());
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -212,6 +215,11 @@ public class MainActivity extends BaseDialogActivity {
         webView.removeAllViews();
         webView.destroy();
         mController.destroy();
+        webView.clearCache(true);
+        webView.clearHistory();
+        webView.clearFormData();
+        CookieManager.getInstance().removeAllCookies(null);
+        CookieManager.getInstance().flush();
     }
 
     @Override
