@@ -73,4 +73,8 @@ public class Constants {
     //T2S_LITE
     public static final String URL_API_REST_T2S_LITE = "http://localhost:8080/";
     public static final String URL_WEB_SOCKET_T2S_LITE = "http://localhost:8080/";
+    //LISA
+    public static final String URL_API_REST_LISA = "https://192.168.99.1:4040/";
+    public static final String URL_WEB_SOCKET_LISA = "ws://192.168.99.1:8181";
+
 }

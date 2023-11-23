@@ -80,8 +80,9 @@
     public static int d(...);
     public static int e(...);
 }
-
+-keepattributes InnerClasses,Signature
 # Retrofit 2
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
+
 }

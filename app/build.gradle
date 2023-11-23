@@ -9,19 +9,23 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
+    ndkVersion "21.3.6528147"
     defaultConfig {
         applicationId "it.ltm.scp.module.android"
         minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 25
-        versionCode 110
-        versionName "1.0.7"
+        versionCode 112
+        versionName "1.0.9"
         project.ext.set("archivesBaseName", "scp_android_app-" + defaultConfig.versionName)
         buildConfigField 'String', 'IPOS_MIN', IPOS_MIN_VERSION
         buildConfigField 'String', 'IGP_MIN', IGP_MIN_VERSION
         buildConfigField 'String', 'PKG_GUIDA', PKG_GUIDA
         buildConfigField 'String', 'PK', PK
         buildConfigField 'String', 'KIV', KIV
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
     }
 
     signingConfigs {
@@ -70,6 +74,7 @@ android {
 //    }
 }
 
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
@@ -85,7 +90,6 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
     implementation 'android.arch.work:work-runtime:1.0.0'
-    implementation(name: 'k3print', ext: 'aar')
     implementation files('libs/k3print.aar')
 
 }

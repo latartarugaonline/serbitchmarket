@@ -1,5 +1,7 @@
 package it.ltm.scp.module.android.devices.terminal;
 
+import android.util.Log;
+
 import it.ltm.scp.module.android.utils.AppUtils;
 
 public class TerminalManagerFactory {

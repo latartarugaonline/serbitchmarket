@@ -266,29 +266,42 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     @Override
     public void setBitmap(@NonNull String format, String align, int width, int height, String encoded, int zoom, int halftone, int mode) throws InvalidArgumentException {
-        if(AppUtils.isLisa()){
-            K3Module.Companion.convert(context,encoded);
-            return;
-        }
+        /*if(AppUtils.isLisa()){
+            List<String> bitmapLisa = K3Module.Companion.convert(context, encoded);
+            String encodedLisa = bitmapLisa.get(0);
+            int widthLisa = Integer.parseInt(bitmapLisa.get(1));
+            int heightLisa = Integer.parseInt(bitmapLisa.get(2));
+
+            encoded=encodedLisa;
+            width=widthLisa;
+            height= heightLisa;
+        }*/
+        Log.e("lisa","lisa");
+        Log.e("lisa","novero");
+        List<String> bitmapLisa = K3Module.Companion.convert(context, encoded);
+        String encodedLisa = bitmapLisa.get(0);
+        int widthLisa = Integer.parseInt(bitmapLisa.get(1));
+        int heightLisa = Integer.parseInt(bitmapLisa.get(2));
+
         builderHelper.setBitmap(format,align,width,height,encoded,zoom,halftone,mode);
 
         operationList.add(new Data.Builder()
                 .op(Data.OP_CMD)
-                .type(Data.TYPE_BITMAP)
-                .format(format)
+                .type(Data.TYPE_IMAGE)
+                .format("bmp")
                 .align(align)
-                .width(width)
-                .height(height)
-                .encoded(encoded)
                 .zoom(zoom)
-                .halftone(halftone)
-                .mode(mode)
+                .width(widthLisa)
+                .height(heightLisa)
+                .encoded(encodedLisa)
+                .part(true)
                 .build());
     }
 
     @Override
     public void setImage(String format, String align, int width, int height, String encoded, int zoom) throws InvalidArgumentException {
         builderHelper.setImage(format, align, width, height, encoded, zoom);
+
         operationList.add(new Data.Builder()
                 .op(Data.OP_CMD)
                 .type(Data.TYPE_IMAGE)

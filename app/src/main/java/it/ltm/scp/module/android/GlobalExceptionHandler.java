@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import it.ltm.scp.module.android.utils.AppUtils;
+
 public class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
     private Thread.UncaughtExceptionHandler defaultErrorHanlder;
     private Context context;
@@ -25,30 +27,32 @@ public class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
     }
 
     private void writeLogToFile(Throwable e) {
-        try {
-            File logDirectory = new File(context.getExternalFilesDir(null), "service_market_log");
-            if (!logDirectory.exists()) {
-                logDirectory.mkdirs();
+        if (AppUtils.isSunmi() || AppUtils.isSunmiS()) {
+            try {
+                File logDirectory = new File(context.getExternalFilesDir(null), "service_market_log");
+                if (!logDirectory.exists()) {
+                    logDirectory.mkdirs();
+                }
+
+                cleanOldLogs(logDirectory);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy", Locale.getDefault());
+                String fileName = "log_" + dateFormat.format(new Date()) + ".txt";
+                File logFile = new File(logDirectory, fileName);
+
+                FileWriter writer = new FileWriter(logFile, true);
+                writer.append("Timestamp: ").append(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date())).append("\n");
+                writer.append("Error: ").append(e.toString()).append("\n");
+                writer.append("Stack Trace:\n");
+                for (StackTraceElement element : e.getStackTrace()) {
+                    writer.append("\t").append(element.toString()).append("\n");
+                }
+                writer.append("\n");
+                writer.flush();
+                writer.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
-
-            cleanOldLogs(logDirectory);
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy", Locale.getDefault());
-            String fileName = "log_" + dateFormat.format(new Date()) + ".txt";
-            File logFile = new File(logDirectory, fileName);
-
-            FileWriter writer = new FileWriter(logFile, true);
-            writer.append("Timestamp: ").append(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date())).append("\n");
-            writer.append("Error: ").append(e.toString()).append("\n");
-            writer.append("Stack Trace:\n");
-            for (StackTraceElement element : e.getStackTrace()) {
-                writer.append("\t").append(element.toString()).append("\n");
-            }
-            writer.append("\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
         }
     }
 
